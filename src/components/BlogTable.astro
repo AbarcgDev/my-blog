@@ -61,7 +61,12 @@ const { postsData } = Astro.props;
                                 ))}
                             </td>
                             <td class="cell-title">
-                                <a href={`/blog/${post.slug}/`}>{post.title}</a>
+                                <a
+                                    href={`/blog/${post.slug}/`}
+                                    class="full-row-link"
+                                >
+                                    {post.title}
+                                </a>
                             </td>
                             <td class="cell-date">
                                 {new Date(post.pubDate).toLocaleDateString(
@@ -209,6 +214,7 @@ const { postsData } = Astro.props;
     tbody tr {
         transition: background 0.15s ease;
         cursor: pointer;
+        position: relative;
     }
 
     tbody tr:hover {
@@ -222,16 +228,24 @@ const { postsData } = Astro.props;
         vertical-align: middle;
     }
 
-    .cell-title a {
+    .full-row-link {
         color: var(--black);
         text-decoration: none;
         font-weight: 600;
         font-size: 0.78rem;
         transition: color 0.2s ease;
+        outline: none;
     }
 
-    .cell-title a:hover {
+    .full-row-link:hover {
         color: var(--primary);
+    }
+
+    .full-row-link::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
     }
 
     .cell-date {

@@ -6,6 +6,10 @@ const { post, ageDays } = Astro.props;
 ---
 
 <article class="project-card">
+    <a
+        href={`/blog/${post.id}/`}
+        class="full-card-link"
+        aria-label={`Leer artículo: ${post.data.title}`}></a>
     {/* ── Status bar ── */}
     <div class="status-bar">
         <div class="status-left">
@@ -93,6 +97,7 @@ const { post, ageDays } = Astro.props;
 <style>
     /* ═══ CARD ═══ */
     .project-card {
+        position: relative;
         background: var(--surface);
         border: 1px solid var(--gray-light);
         border-radius: 14px;
@@ -157,6 +162,13 @@ const { post, ageDays } = Astro.props;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+    }
+
+    .full-card-link {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        outline: none;
     }
 
     .card-desc {
@@ -235,6 +247,8 @@ const { post, ageDays } = Astro.props;
 
     /* ── Footer ── */
     .card-footer {
+        position: relative;
+        z-index: 2;
         display: flex;
         justify-content: space-between;
         align-items: center;

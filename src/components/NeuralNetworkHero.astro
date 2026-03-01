@@ -72,7 +72,7 @@ const { name = "Abargdev", role = "AI & Data Enthusiast" } = Astro.props;
     .hero-greeting {
         font-family: "Fira Code", monospace;
         font-size: 0.95rem;
-        color: var(--accent);
+        color: var(--primary);
         margin: 0 0 0.25rem 0;
         letter-spacing: 0.15em;
         text-transform: uppercase;
@@ -94,12 +94,12 @@ const { name = "Abargdev", role = "AI & Data Enthusiast" } = Astro.props;
 
     @media (prefers-color-scheme: dark) {
         .hero-name {
-            color: #ffffff;
-            text-shadow: 0 0 40px
-                color-mix(in srgb, var(--primary) 30%, transparent);
+            color: #e6fafa;
+            text-shadow: 0 0 20px
+                color-mix(in srgb, var(--primary) 15%, transparent);
         }
         .hero-greeting {
-            color: var(--primary);
+            color: color-mix(in srgb, var(--primary) 80%, #666);
         }
     }
 
@@ -143,7 +143,7 @@ const { name = "Abargdev", role = "AI & Data Enthusiast" } = Astro.props;
 
     @media (prefers-color-scheme: dark) {
         .metric-value {
-            color: #ffffff;
+            color: #e6fafa;
         }
     }
 
@@ -188,7 +188,7 @@ const { name = "Abargdev", role = "AI & Data Enthusiast" } = Astro.props;
 
     @media (prefers-color-scheme: dark) {
         .layer-labels :global(.layer-label) {
-            color: rgba(0, 229, 238, 0.45);
+            color: rgba(0, 150, 155, 0.45);
         }
     }
 
@@ -245,26 +245,26 @@ const { name = "Abargdev", role = "AI & Data Enthusiast" } = Astro.props;
         if (isDark) {
             return {
                 nodeR: 0,
-                nodeG: 229,
-                nodeB: 238, // cyan
+                nodeG: 140,
+                nodeB: 145, // subdued cyan for low contrast
                 baseR: 0,
-                baseG: 192,
-                baseB: 199, // subtle cyan
-                whiteR: 255,
-                whiteG: 255,
-                whiteB: 255,
+                baseG: 60,
+                baseB: 65, // very subtle background cyan
+                whiteR: 180,
+                whiteG: 190,
+                whiteB: 190, // soft white
             };
         } else {
             return {
-                nodeR: 199,
-                nodeG: 77,
-                nodeB: 0, // accent #C74D00
-                baseR: 180,
-                baseG: 70,
-                baseB: 0, // subtle accent
-                whiteR: 120,
-                whiteG: 40,
-                whiteB: 0, // dark orange core
+                nodeR: 0,
+                nodeG: 143,
+                nodeB: 148, // primary #008f94
+                baseR: 0,
+                baseG: 99,
+                baseB: 102, // primary-dark #006366
+                whiteR: 255,
+                whiteG: 255,
+                whiteB: 255, // bright core
             };
         }
     }

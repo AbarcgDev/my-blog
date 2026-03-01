@@ -6,40 +6,56 @@
 
 :root {
 	/* Base */
-	--background: #f0fdfe;
-	/* Un poco más suave para la vista */
+	--background: #f4f9f9;
+	/* Un gris-cian extraclaro muy sutil y suave */
 	--surface: #ffffff;
 	/* Para los "cards" o cajas */
 
 	/* Brand */
-	--primary: #00c0c7;
-	--primary-dark: #008a8f;
+	--primary: #008f94;
+	/* Cian oscurecido para buen contraste sobre blanco */
+	--primary-dark: #006366;
 
-	/* Accent (El naranja "AI") */
-	--accent: #C74D00;
-	--accent-light: #ff8a43;
+	/* Accent */
+	--accent: #b04400;
+	/* Naranja un poco más mate */
+	--accent-light: #e65c00;
 
 	/* Neutrals */
-	--black: #1a2626;
-	--gray-dark: #003E40;
-	--gray: #4a6b6c;
-	--gray-light: #e0f2f3;
+	--black: #112121;
+	/* Casi negro pero entintado de cian oscuro */
+	--gray-dark: #325254;
+	--gray: #54787a;
+	--gray-light: #d6e8e8;
+	/* Bordes sutiles y armónicos */
 
 	--box-shadow:
-		0 10px 15px -3px color-mix(in srgb, var(--gray-light), transparent 80%),
-		0 4px 6px -2px color-mix(in srgb, var(--gray-light), transparent 90%);
+		0 10px 15px -3px color-mix(in srgb, var(--gray-light), transparent 60%),
+		0 4px 6px -2px color-mix(in srgb, var(--gray-light), transparent 80%);
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--background: #051213;
-		--surface: #0a1f20;
-		--black: #e6fafa;
-		--gray-light: #1a2f30;
-		--primary: #00e5ee;
+		--background: #0d1a1b;
+		/* Más suave, tono pálido oscuro */
+		--surface: #142425;
+		/* Gris cian oscuro mate */
+		--black: #b8c9c9;
+		/* Blanco apagado / cyan grisáceo (Menos brillo) */
+		--gray-dark: #648a8c;
+		/* Grises cálidos fríos */
+		--gray: #4d6869;
+		--gray-light: #203638;
+		/* Bordes sutiles */
+		--primary: #00a0a6;
+		/* Cian menos neón y saturado */
+		--primary-dark: #007a7e;
+		--accent: #a84200;
+		/* Naranja tostado apagado */
+		--accent-light: #cc5000;
 		--box-shadow:
-			0 20px 25px -5px rgba(0, 0, 0, 0.5),
-			0 10px 10px -5px color-mix(in srgb, var(--gray-light), black 50%);
+			0 20px 25px -5px rgba(0, 0, 0, 0.35),
+			0 10px 10px -5px color-mix(in srgb, var(--gray-light), black 60%);
 	}
 }
 
