@@ -6,10 +6,19 @@ import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
 
-type Props = CollectionEntry<"blog">["data"];
+type Props = CollectionEntry<"blog">["data"] & {
+	headings?: { depth: number; slug: string; text: string }[];
+};
 
-const { title, description, pubDate, updatedDate, heroImage, tags } =
-	Astro.props;
+const {
+	title,
+	description,
+	pubDate,
+	updatedDate,
+	heroImage,
+	tags,
+	headings = [],
+} = Astro.props;
 ---
 
 <html lang="es">
@@ -17,70 +26,284 @@ const { title, description, pubDate, updatedDate, heroImage, tags } =
 		<BaseHead title={title} description={description} />
 	</head>
 
-	<body>
+	<body class="grid-app-body">
 		<Header />
-		<main class="blog-post-main">
-			<article class="article-panel">
-				<!-- Hero image (full-width inside panel) -->
-				{
-					heroImage && (
-						<div class="hero-image">
-							<Image
-								width={960}
-								height={480}
-								src={heroImage}
-								alt=""
-							/>
-						</div>
-					)
-				}
+		<main class="grid-app-main blog-post-main">
+			<div class="post-layout">
+				<!-- ═══ SIDEBAR ═══ -->
+				<aside class="post-sidebar">
+					<a href="/blog" class="back-button"> ← Volver al Blog</a>
 
-				<!-- Article header -->
-				<div class="article-header">
-					<div class="article-meta">
-						<span class="meta-dot"></span>
-						<FormattedDate date={pubDate} />
+					<div class="sidebar-block author-block">
+						<div class="author-info">
+							<strong>Alvaro Abarca Godoy</strong>
+							<span>Data Engineer / Developer</span>
+						</div>
+					</div>
+
+					<div class="sidebar-block meta-block">
+						<div class="meta-item">
+							<span class="meta-label">Publicado</span>
+							<FormattedDate date={pubDate} />
+						</div>
 						{
 							updatedDate && (
-								<span class="meta-updated">
-									· Actualizado{" "}
+								<div class="meta-item">
+									<span class="meta-label">Actualizado</span>
 									<FormattedDate date={updatedDate} />
-								</span>
+								</div>
+							)
+						}
+						{
+							tags && tags.length > 0 && (
+								<div class="meta-tags">
+									{tags.map((tag: string) => (
+										<span class="meta-tag">{tag}</span>
+									))}
+								</div>
 							)
 						}
 					</div>
-					<h1 class="article-title">{title}</h1>
+
 					{
-						description && (
-							<p class="article-description">{description}</p>
-						)
-					}
-					{
-						tags && tags.length > 0 && (
-							<div class="article-tags">
-								{tags.map((tag) => (
-									<span class="article-tag">{tag}</span>
-								))}
+						headings.length > 0 && (
+							<div class="sidebar-block toc-block">
+								<h3 class="toc-title">Índice</h3>
+								<ul class="toc-list">
+									{headings.map((h: any) => (
+										<li class={`toc-depth-${h.depth}`}>
+											<a href={`#${h.slug}`}>{h.text}</a>
+										</li>
+									))}
+								</ul>
 							</div>
 						)
 					}
-				</div>
+				</aside>
 
-				<div class="article-divider"></div>
+				<!-- ═══ CONTENT ═══ -->
+				<div class="post-content-wrapper">
+					<article class="article-panel">
+						<!-- Hero image (full-width inside panel) -->
+						{
+							heroImage && (
+								<div class="hero-image">
+									<Image
+										width={960}
+										height={480}
+										src={heroImage}
+										alt=""
+									/>
+								</div>
+							)
+						}
 
-				<!-- Content -->
-				<div class="prose">
-					<slot />
+						<!-- Article header -->
+						<div class="article-header">
+							<h1 class="article-title">{title}</h1>
+							{
+								description && (
+									<p class="article-description">
+										{description}
+									</p>
+								)
+							}
+						</div>
+
+						<div class="article-divider"></div>
+
+						<!-- Content -->
+						<div class="prose">
+							<slot />
+						</div>
+					</article>
+					<div class="app-footer-wrapper">
+						<Footer />
+					</div>
 				</div>
-			</article>
+			</div>
 		</main>
-		<Footer />
 		<style>
-			main.blog-post-main {
+			/* ═══ GLOBAL APP LAYOUT ═══ */
+			:global(.grid-app-body) {
+				height: 100vh;
+				overflow: hidden;
+				display: flex;
+				flex-direction: column;
+				background: var(--background);
+				margin: 0;
+			}
+
+			:global(.grid-app-body) > * {
+				flex-shrink: 0;
+			}
+
+			.grid-app-main {
+				flex: 1;
 				width: 100%;
-				max-width: 800px;
 				margin: 0 auto;
-				padding: 1.5rem 1rem;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+				padding: 0 1rem;
+			}
+
+			/* ═══ TWO-COLUMN POST LAYOUT ═══ */
+			.post-layout {
+				display: grid;
+				grid-template-columns: 320px 1fr;
+				gap: 1.5rem;
+				flex: 1;
+				overflow: hidden;
+				padding-bottom: 2rem;
+				max-width: 1400px;
+				width: 100%;
+				margin: 0 auto;
+			}
+
+			.post-sidebar {
+				display: flex;
+				flex-direction: column;
+				gap: 1.5rem;
+				height: 100%;
+				overflow-y: auto;
+				padding-right: 0.5rem;
+			}
+			.post-sidebar::-webkit-scrollbar {
+				width: 6px;
+			}
+			.post-sidebar::-webkit-scrollbar-thumb {
+				background-color: var(--gray-light);
+				border-radius: 10px;
+			}
+
+			.post-content-wrapper {
+				flex: 1;
+				overflow-y: auto;
+				padding-right: 0.5rem;
+			}
+			.post-content-wrapper::-webkit-scrollbar {
+				width: 6px;
+			}
+			.post-content-wrapper::-webkit-scrollbar-thumb {
+				background-color: var(--primary);
+				border-radius: 10px;
+			}
+
+			.app-footer-wrapper {
+				margin-top: 3rem;
+				border-radius: 14px;
+				overflow: hidden;
+			}
+
+			/* ═══ SIDEBAR BLOCKS ═══ */
+			.back-button {
+				display: inline-flex;
+				align-items: center;
+				font-family: "Fira Code", monospace;
+				font-size: 0.85rem;
+				font-weight: 700;
+				color: var(--gray);
+				text-decoration: none;
+				transition: color 0.2s ease;
+				padding: 0.5rem 0;
+			}
+			.back-button:hover {
+				color: var(--primary);
+			}
+
+			.sidebar-block {
+				background: var(--surface);
+				border: 1px solid var(--gray-light);
+				border-radius: 14px;
+				padding: 1.2rem;
+				box-shadow: var(--box-shadow);
+			}
+
+			.author-info strong {
+				display: block;
+				font-family: "Fira Code", monospace;
+				font-size: 0.9rem;
+				color: var(--black);
+			}
+			.author-info span {
+				display: block;
+				font-family: "Fira Code", monospace;
+				font-size: 0.75rem;
+				color: var(--gray);
+				margin-top: 0.2rem;
+			}
+
+			.meta-item {
+				margin-bottom: 0.8rem;
+			}
+			.meta-item:last-child {
+				margin-bottom: 0;
+			}
+			.meta-label {
+				display: block;
+				font-family: "Fira Code", monospace;
+				font-size: 0.65rem;
+				color: var(--gray);
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				margin-bottom: 0.2rem;
+			}
+			.meta-tags {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 0.4rem;
+				margin-top: 1rem;
+			}
+			.meta-tag {
+				font-family: "Fira Code", monospace;
+				font-size: 0.6rem;
+				padding: 0.2rem 0.5rem;
+				border-radius: 4px;
+				background: color-mix(in srgb, var(--primary) 10%, transparent);
+				color: var(--primary);
+				border: 1px solid
+					color-mix(in srgb, var(--primary) 18%, transparent);
+				text-transform: uppercase;
+			}
+
+			.toc-title {
+				font-family: "Fira Code", monospace;
+				font-size: 0.8rem;
+				font-weight: 700;
+				color: var(--black);
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+				margin: 0 0 1rem 0;
+			}
+			.toc-list {
+				list-style: none;
+				padding: 0;
+				margin: 0;
+			}
+			.toc-list li {
+				margin-bottom: 0.6rem;
+			}
+			.toc-list a {
+				text-decoration: none;
+				color: var(--gray);
+				font-size: 0.85rem;
+				transition: color 0.2s ease;
+			}
+			.toc-list a:hover {
+				color: var(--primary);
+			}
+			.toc-depth-2 {
+				padding-left: 0;
+				font-weight: 500;
+			}
+			.toc-depth-3 {
+				padding-left: 1rem;
+				font-size: 0.8rem;
+			}
+			.toc-depth-4 {
+				padding-left: 2rem;
+				font-size: 0.75rem;
 			}
 
 			.article-panel {
@@ -281,6 +504,31 @@ const { title, description, pubDate, updatedDate, heroImage, tags } =
 			}
 
 			/* ═══ RESPONSIVE ═══ */
+			@media (max-width: 900px) {
+				.post-layout {
+					grid-template-columns: 1fr;
+					overflow-y: auto;
+					padding-right: 0.5rem;
+				}
+				.post-layout::-webkit-scrollbar {
+					width: 6px;
+				}
+				.post-layout::-webkit-scrollbar-thumb {
+					background-color: var(--primary);
+					border-radius: 10px;
+				}
+
+				.post-sidebar {
+					height: auto;
+					overflow-y: visible;
+					padding-right: 0;
+				}
+				.post-content-wrapper {
+					overflow-y: visible;
+					padding-right: 0;
+				}
+			}
+
 			@media (max-width: 640px) {
 				.article-header {
 					padding: 1.2rem 1.2rem 0;
