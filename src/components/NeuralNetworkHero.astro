@@ -309,11 +309,19 @@ const { name = "Abargdev", role = "AI & Data Enthusiast" } = Astro.props;
 
     function resize() {
         const rect = canvas.getBoundingClientRect();
+        // Set new internal dimensions
         W = rect.width;
         H = rect.height;
+
+        // Update canvas resolution drawing scaling based on DPR for crispness
         canvas.width = W * DPR;
         canvas.height = H * DPR;
+
+        // Reset transform and scale properly
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.scale(DPR, DPR);
+
+        // Rebuild all nodes positions based on new W & H
         buildNetwork();
     }
 
@@ -323,10 +331,13 @@ const { name = "Abargdev", role = "AI & Data Enthusiast" } = Astro.props;
         layerStartIdx = [];
 
         const numLayers = architecture.length;
-        const padX = W * 0.08;
+        // On small screens, use less padding and dynamic scaling
+        const isMobile = W < 600;
+        const padX = isMobile ? W * 0.04 : W * 0.08;
         const layerSpacing = (W - padX * 2) / (numLayers - 1);
-        const padY = H * 0.12;
+        const padY = isMobile ? H * 0.08 : H * 0.12;
         const usableH = H - padY * 2;
+        const nodeRadiusGlobal = isMobile ? 0.7 : 1; // scale nodes down on mobile
 
         for (let l = 0; l < numLayers; l++) {
             layerStartIdx.push(nodes.length);
@@ -342,7 +353,7 @@ const { name = "Abargdev", role = "AI & Data Enthusiast" } = Astro.props;
                     y,
                     baseX: x,
                     baseY: y,
-                    r: isIO ? 5 : 3.5,
+                    r: (isIO ? 5 : 3.5) * nodeRadiusGlobal,
                     layer: l,
                     activation: 0,
                     targetAct: 0,

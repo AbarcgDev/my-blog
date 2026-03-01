@@ -11,7 +11,23 @@ import { Icon } from "astro-icon/components";
 				<span>{SITE_TITLE}</span>
 			</a>
 		</h2>
-		<div class="internal-links">
+		<button id="menu-toggle" class="menu-toggle" aria-label="Menú">
+			<svg
+				viewBox="0 0 24 24"
+				width="28"
+				height="28"
+				stroke="currentColor"
+				stroke-width="2"
+				fill="none"
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			>
+				<line x1="3" y1="12" x2="21" y2="12"></line>
+				<line x1="3" y1="6" x2="21" y2="6"></line>
+				<line x1="3" y1="18" x2="21" y2="18"></line>
+			</svg>
+		</button>
+		<div class="internal-links" id="internal-links">
 			<HeaderLink href="/">Home</HeaderLink>
 			<HeaderLink href="/blog">Blog</HeaderLink>
 			<HeaderLink href="/portfolio">Portafolio</HeaderLink>
@@ -76,9 +92,51 @@ import { Icon } from "astro-icon/components";
 	.social-links a {
 		display: flex;
 	}
+	.menu-toggle {
+		display: none;
+		background: transparent;
+		border: none;
+		color: var(--black);
+		cursor: pointer;
+		padding: 0.5rem;
+	}
 	@media (max-width: 720px) {
+		nav {
+			position: relative;
+		}
 		.social-links {
 			display: none;
 		}
+		.menu-toggle {
+			display: block;
+		}
+		.internal-links {
+			display: none;
+			position: absolute;
+			top: 100%;
+			left: -1em;
+			width: calc(100% + 2em);
+			background: var(--surface);
+			flex-direction: column;
+			box-shadow: var(--box-shadow);
+			z-index: 100;
+			text-align: center;
+			padding: 1rem 0;
+			border-radius: 0 0 8px 8px;
+		}
+		.internal-links.open {
+			display: flex;
+		}
+		.internal-links a {
+			padding: 0.5rem 1rem;
+		}
 	}
 </style>
+<script>
+	const menuToggle = document.getElementById("menu-toggle");
+	const internalLinks = document.getElementById("internal-links");
+
+	menuToggle?.addEventListener("click", () => {
+		internalLinks?.classList.toggle("open");
+	});
+</script>

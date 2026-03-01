@@ -28,6 +28,9 @@
 		"@iconify-json/devicon": "^1.2.59",
 		"@iconify-json/mdi": "^1.2.3",
 		"@types/node": "^25.3.2",
+		"autoprefixer": "^10.4.27",
+		"postcss": "^8.5.6",
+		"tailwindcss": "^3.4.19",
 		"wrangler": "^4.69.0"
 	}
 }
