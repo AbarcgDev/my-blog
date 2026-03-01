@@ -157,22 +157,26 @@ const projectsData = projects.map((p) => ({
 						</section>
 					</div>
 
-					{
-						projects.length === 0 ? (
-							<div class="empty-state">
-								<p>
-									No hay servicios. Ejecuta{" "}
-									<code>npm run sync:projects</code>
-								</p>
-							</div>
-						) : (
-							<PortfolioGrid projects={projectMetrics} />
-						)
-					}
+					<div class="obs-grid-wrapper">
+						{
+							projects.length === 0 ? (
+								<div class="empty-state">
+									<p>
+										No hay servicios. Ejecuta{" "}
+										<code>npm run sync:projects</code>
+									</p>
+								</div>
+							) : (
+								<PortfolioGrid projects={projectMetrics} />
+							)
+						}
+						<div class="app-footer-wrapper">
+							<Footer />
+						</div>
+					</div>
 				</div>
 			</div>
 		</main>
-		<Footer />
 		<style>
 			:global(.grid-app-body) {
 				height: 100vh;
@@ -246,6 +250,12 @@ const projectsData = projects.map((p) => ({
 			.obs-grid-wrapper::-webkit-scrollbar-thumb {
 				background-color: var(--primary);
 				border-radius: 10px;
+			}
+
+			.app-footer-wrapper {
+				margin-top: 3rem;
+				border-radius: 14px;
+				overflow: hidden;
 			}
 
 			/* ═══ EMPTY ═══ */

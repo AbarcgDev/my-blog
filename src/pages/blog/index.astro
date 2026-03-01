@@ -108,296 +108,324 @@ const readingTotal = posts.reduce((s, p) => s + (p.data.readingTime || 5), 0);
 						</section>
 					</div>
 					<!-- ═══ BLOG GRID ═══ -->
-					<div class="blog-grid" id="blog-grid">
-						{
-							posts.map((post) => (
-								<div
-									class="blog-card-wrapper"
-									data-title={post.data.title.toLowerCase()}
-									data-tags={JSON.stringify(
-										post.data.tags || []
-									)}
-									data-date={post.data.pubDate.valueOf()}
-								>
-									<HomeBlogCard
-										post={post}
-										ageDays={Math.floor(
-											(new Date().getTime() -
-												new Date(
-													post.data.pubDate
-												).getTime()) /
-												(1000 * 60 * 60 * 24)
+					<div class="blog-grid-wrapper">
+						<div class="blog-grid" id="blog-grid">
+							{
+								posts.map((post) => (
+									<div
+										class="blog-card-wrapper"
+										data-title={post.data.title.toLowerCase()}
+										data-tags={JSON.stringify(
+											post.data.tags || []
 										)}
-									/>
-								</div>
-							))
-						}
+										data-date={post.data.pubDate.valueOf()}
+									>
+										<HomeBlogCard
+											post={post}
+											ageDays={Math.floor(
+												(new Date().getTime() -
+													new Date(
+														post.data.pubDate
+													).getTime()) /
+													(1000 * 60 * 60 * 24)
+											)}
+										/>
+									</div>
+								))
+							}
+						</div>
+						<div class="app-footer-wrapper">
+							<Footer />
+						</div>
 					</div>
 				</div>
 			</div>
 		</main>
+		<style>
+			:global(.grid-app-body) {
+				height: 100vh;
+				overflow: hidden;
+				display: flex;
+				flex-direction: column;
+				background: var(--background);
+				margin: 0;
+			}
+
+			:global(.grid-app-body) > * {
+				flex-shrink: 0;
+			}
+
+			.grid-app-main {
+				flex: 1;
+				width: 100%;
+				margin: 0 auto;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden; /* Prevent body scroll */
+				padding: 0 1rem;
+			}
+
+			/* ═══════════ LAYOUT ═══════════ */
+			.blog-layout {
+				display: grid;
+				grid-template-columns: 320px 1fr;
+				gap: 1.5rem;
+				flex: 1;
+				overflow: hidden; /* Contain scrolling children */
+				padding-bottom: 2rem;
+			}
+
+			.blog-sidebar {
+				display: flex;
+				flex-direction: column;
+				gap: 1.5rem;
+				height: 100%;
+				overflow-y: auto; /* Independent scroll */
+				padding-right: 0.5rem;
+			}
+
+			.blog-content {
+				display: flex;
+				flex-direction: column;
+				gap: 1.5rem;
+				min-width: 0;
+				height: 100%;
+				overflow: hidden; /* Contains inner grid scroll */
+			}
+
+			/* ═══════════ BLOG GRID ═══════════ */
+			.blog-grid-wrapper {
+				flex: 1;
+				overflow-y: auto; /* Independent scroll */
+				padding-right: 0.5rem;
+			}
+
+			.blog-grid-wrapper::-webkit-scrollbar {
+				width: 6px;
+			}
+			.blog-grid-wrapper::-webkit-scrollbar-thumb {
+				background-color: var(--primary);
+				border-radius: 10px;
+			}
+
+			.blog-grid {
+				display: grid;
+				grid-template-columns: 1fr;
+				gap: 1.5rem;
+			}
+
+			.app-footer-wrapper {
+				margin-top: 3rem;
+				border-radius: 14px;
+				overflow: hidden;
+			}
+
+			/* ═══════════ PANELS & FILTERS ═══════════ */
+			.filter-container {
+				flex-shrink: 0; /* Ensures filter doesn't squash when grid scrolls */
+				background: var(--background);
+				padding-bottom: 0.5rem;
+				z-index: 10;
+			}
+
+			.panel {
+				background: var(--surface);
+				border: 1px solid var(--gray-light);
+				border-radius: 14px;
+				padding: 1rem 1.2rem;
+				box-shadow: var(--box-shadow);
+			}
+
+			.filter-panel {
+				/* Elimina sticky de la caja interna, el container lo maneja */
+			}
+
+			.filter-controls {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				flex-wrap: wrap;
+				gap: 1rem;
+			}
+
+			.filter-header {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+
+			.filter-actions {
+				display: flex;
+				align-items: center;
+				gap: 0.8rem;
+				flex-wrap: wrap;
+				flex: 1;
+				justify-content: flex-end;
+			}
+
+			.filter-select {
+				font-family: "Fira Code", monospace;
+				font-size: 0.8rem;
+				padding: 0.5rem 0.8rem;
+				border-radius: 8px;
+				border: 1px solid var(--gray-light);
+				background: var(--background);
+				color: var(--black);
+				outline: none;
+				cursor: pointer;
+				transition: border-color 0.2s ease;
+			}
+
+			.filter-select:focus {
+				border-color: var(--primary);
+			}
+
+			.search-input {
+				font-family: "Fira Code", monospace;
+				font-size: 0.8rem;
+				padding: 0.5rem 0.8rem;
+				border-radius: 8px;
+				border: 1px solid var(--gray-light);
+				background: var(--background);
+				color: var(--black);
+				outline: none;
+				width: 100%;
+				max-width: 250px;
+				transition: border-color 0.2s ease;
+			}
+
+			.search-input:focus {
+				border-color: var(--primary);
+			}
+
+			.panel-header {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				margin-bottom: 0.8rem;
+			}
+
+			.panel-dot {
+				width: 6px;
+				height: 6px;
+				border-radius: 50%;
+				background: var(--primary);
+			}
+
+			.panel-title {
+				font-family: "Fira Code", monospace;
+				font-size: 0.72rem;
+				font-weight: 700;
+				color: var(--black);
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+			}
+
+			@media (max-width: 900px) {
+				:global(.grid-app-body) {
+					height: auto;
+					overflow: visible;
+				}
+				.grid-app-main,
+				.blog-layout,
+				.blog-sidebar,
+				.blog-content,
+				.blog-grid {
+					overflow: visible;
+					height: auto;
+				}
+
+				.blog-layout {
+					grid-template-columns: 1fr;
+				}
+			}
+
+			@media (max-width: 640px) {
+				.filter-controls {
+					flex-direction: column;
+					align-items: flex-start;
+				}
+
+				.filter-actions {
+					width: 100%;
+					flex-direction: column;
+					align-items: stretch;
+				}
+
+				.filter-select,
+				.search-input {
+					max-width: 100%;
+				}
+			}
+		</style>
+
+		<script>
+			// ═══ SEARCH & FILTER ═══
+			(() => {
+				const searchInput = document.getElementById(
+					"search-input"
+				) as HTMLInputElement | null;
+				const tagFilter = document.getElementById(
+					"tag-filter"
+				) as HTMLSelectElement | null;
+				const sortFilter = document.getElementById(
+					"sort-filter"
+				) as HTMLSelectElement | null;
+				const grid = document.getElementById("blog-grid");
+				if (!searchInput || !tagFilter || !sortFilter || !grid) return;
+
+				const wrappers = Array.from(
+					grid.querySelectorAll(".blog-card-wrapper")
+				);
+
+				function updateView() {
+					const query = searchInput!.value.toLowerCase();
+					const selectedTag = tagFilter!.value;
+					const sortOrder = sortFilter!.value;
+
+					// 1. Filter
+					wrappers.forEach((wrapper) => {
+						const title = wrapper.getAttribute("data-title") || "";
+						const tagsAttr =
+							wrapper.getAttribute("data-tags") || "[]";
+						let tags: string[] = [];
+						try {
+							tags = JSON.parse(tagsAttr).map((t: string) =>
+								t.toLowerCase()
+							);
+						} catch (e) {}
+
+						const matchSearch =
+							title.includes(query) ||
+							tags.join(" ").includes(query);
+						const matchTag =
+							selectedTag === "" || tags.includes(selectedTag);
+
+						(wrapper as HTMLElement).style.display =
+							matchSearch && matchTag ? "" : "none";
+					});
+
+					// 2. Sort
+					wrappers.sort((a, b) => {
+						const dateA = parseInt(
+							a.getAttribute("data-date") || "0"
+						);
+						const dateB = parseInt(
+							b.getAttribute("data-date") || "0"
+						);
+						return sortOrder === "oldest"
+							? dateA - dateB
+							: dateB - dateA;
+					});
+
+					// Re-append to grid
+					wrappers.forEach((w) => grid!.appendChild(w));
+				}
+
+				searchInput.addEventListener("input", updateView);
+				tagFilter.addEventListener("change", updateView);
+				sortFilter.addEventListener("change", updateView);
+			})();
+		</script>
 	</body>
 </html>
-<Footer />
-
-<style>
-	:global(.grid-app-body) {
-		height: 100vh;
-		overflow: hidden;
-		display: flex;
-		flex-direction: column;
-		background: var(--background);
-		margin: 0;
-	}
-
-	:global(.grid-app-body) > * {
-		flex-shrink: 0;
-	}
-
-	.grid-app-main {
-		flex: 1;
-		width: 100%;
-		margin: 0 auto;
-		display: flex;
-		flex-direction: column;
-		overflow: hidden; /* Prevent body scroll */
-		padding: 0 1rem;
-	}
-
-	/* ═══════════ LAYOUT ═══════════ */
-	.blog-layout {
-		display: grid;
-		grid-template-columns: 320px 1fr;
-		gap: 1.5rem;
-		flex: 1;
-		overflow: hidden; /* Contain scrolling children */
-		padding-bottom: 2rem;
-	}
-
-	.blog-sidebar {
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-		height: 100%;
-		overflow-y: auto; /* Independent scroll */
-		padding-right: 0.5rem;
-	}
-
-	.blog-content {
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-		min-width: 0;
-		height: 100%;
-		overflow: hidden; /* Contains inner grid scroll */
-	}
-
-	/* ═══════════ BLOG GRID ═══════════ */
-	.blog-grid {
-		display: grid;
-		grid-template-columns: 1fr;
-		gap: 1.5rem;
-		flex: 1;
-		overflow-y: auto; /* Independent scroll */
-		padding-right: 0.5rem;
-	}
-
-	/* ═══════════ PANELS & FILTERS ═══════════ */
-	.filter-container {
-		flex-shrink: 0; /* Ensures filter doesn't squash when grid scrolls */
-		background: var(--background);
-		padding-bottom: 0.5rem;
-		z-index: 10;
-	}
-
-	.panel {
-		background: var(--surface);
-		border: 1px solid var(--gray-light);
-		border-radius: 14px;
-		padding: 1rem 1.2rem;
-		box-shadow: var(--box-shadow);
-	}
-
-	.filter-panel {
-		/* Elimina sticky de la caja interna, el container lo maneja */
-	}
-
-	.filter-controls {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		gap: 1rem;
-	}
-
-	.filter-header {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-
-	.filter-actions {
-		display: flex;
-		align-items: center;
-		gap: 0.8rem;
-		flex-wrap: wrap;
-		flex: 1;
-		justify-content: flex-end;
-	}
-
-	.filter-select {
-		font-family: "Fira Code", monospace;
-		font-size: 0.8rem;
-		padding: 0.5rem 0.8rem;
-		border-radius: 8px;
-		border: 1px solid var(--gray-light);
-		background: var(--background);
-		color: var(--black);
-		outline: none;
-		cursor: pointer;
-		transition: border-color 0.2s ease;
-	}
-
-	.filter-select:focus {
-		border-color: var(--primary);
-	}
-
-	.search-input {
-		font-family: "Fira Code", monospace;
-		font-size: 0.8rem;
-		padding: 0.5rem 0.8rem;
-		border-radius: 8px;
-		border: 1px solid var(--gray-light);
-		background: var(--background);
-		color: var(--black);
-		outline: none;
-		width: 100%;
-		max-width: 250px;
-		transition: border-color 0.2s ease;
-	}
-
-	.search-input:focus {
-		border-color: var(--primary);
-	}
-
-	.panel-header {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		margin-bottom: 0.8rem;
-	}
-
-	.panel-dot {
-		width: 6px;
-		height: 6px;
-		border-radius: 50%;
-		background: var(--primary);
-	}
-
-	.panel-title {
-		font-family: "Fira Code", monospace;
-		font-size: 0.72rem;
-		font-weight: 700;
-		color: var(--black);
-		text-transform: uppercase;
-		letter-spacing: 0.05em;
-	}
-
-	@media (max-width: 900px) {
-		:global(.grid-app-body) {
-			height: auto;
-			overflow: visible;
-		}
-		.grid-app-main,
-		.blog-layout,
-		.blog-sidebar,
-		.blog-content,
-		.blog-grid {
-			overflow: visible;
-			height: auto;
-		}
-
-		.blog-layout {
-			grid-template-columns: 1fr;
-		}
-	}
-
-	@media (max-width: 640px) {
-		.filter-controls {
-			flex-direction: column;
-			align-items: flex-start;
-		}
-
-		.filter-actions {
-			width: 100%;
-			flex-direction: column;
-			align-items: stretch;
-		}
-
-		.filter-select,
-		.search-input {
-			max-width: 100%;
-		}
-	}
-</style>
-
-<script>
-	// ═══ SEARCH & FILTER ═══
-	(() => {
-		const searchInput = document.getElementById(
-			"search-input"
-		) as HTMLInputElement | null;
-		const tagFilter = document.getElementById(
-			"tag-filter"
-		) as HTMLSelectElement | null;
-		const sortFilter = document.getElementById(
-			"sort-filter"
-		) as HTMLSelectElement | null;
-		const grid = document.getElementById("blog-grid");
-		if (!searchInput || !tagFilter || !sortFilter || !grid) return;
-
-		const wrappers = Array.from(
-			grid.querySelectorAll(".blog-card-wrapper")
-		);
-
-		function updateView() {
-			const query = searchInput!.value.toLowerCase();
-			const selectedTag = tagFilter!.value;
-			const sortOrder = sortFilter!.value;
-
-			// 1. Filter
-			wrappers.forEach((wrapper) => {
-				const title = wrapper.getAttribute("data-title") || "";
-				const tagsAttr = wrapper.getAttribute("data-tags") || "[]";
-				let tags: string[] = [];
-				try {
-					tags = JSON.parse(tagsAttr).map((t: string) =>
-						t.toLowerCase()
-					);
-				} catch (e) {}
-
-				const matchSearch =
-					title.includes(query) || tags.join(" ").includes(query);
-				const matchTag =
-					selectedTag === "" || tags.includes(selectedTag);
-
-				(wrapper as HTMLElement).style.display =
-					matchSearch && matchTag ? "" : "none";
-			});
-
-			// 2. Sort
-			wrappers.sort((a, b) => {
-				const dateA = parseInt(a.getAttribute("data-date") || "0");
-				const dateB = parseInt(b.getAttribute("data-date") || "0");
-				return sortOrder === "oldest" ? dateA - dateB : dateB - dateA;
-			});
-
-			// Re-append to grid
-			wrappers.forEach((w) => grid!.appendChild(w));
-		}
-
-		searchInput.addEventListener("input", updateView);
-		tagFilter.addEventListener("change", updateView);
-		sortFilter.addEventListener("change", updateView);
-	})();
-</script>
