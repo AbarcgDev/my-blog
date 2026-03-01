@@ -34,7 +34,7 @@ const { post, ageDays } = Astro.props;
         <span class="lang-glyph">
             <Icon name="mdi:file-document-outline" />
         </span>
-        <div>
+        <div class="title-content">
             <h2 class="card-name">
                 {post.data.title}
             </h2>
@@ -53,6 +53,15 @@ const { post, ageDays } = Astro.props;
                     </div>
                 )
             }
+        </div>
+        <div class="card-actions">
+            <a
+                href={`/blog/${post.id}/`}
+                class="action-link detail-link"
+                title="Leer artículo"
+            >
+                <Icon name="mdi:arrow-right" />
+            </a>
         </div>
     </div>
 
@@ -84,13 +93,6 @@ const { post, ageDays } = Astro.props;
                 <Icon name="mdi:tag-multiple" />
             </span>
         </div>
-    </div>
-
-    {/* ── Footer ── */}
-    <div class="card-footer" style="justify-content: flex-end;">
-        <a href={`/blog/${post.id}/`} class="detail-link" title="Leer artículo">
-            <Icon name="mdi:arrow-right" />
-        </a>
     </div>
 </article>
 
@@ -184,39 +186,37 @@ const { post, ageDays } = Astro.props;
 
     /* ── Metrics grid ── */
     .metrics-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.5rem;
-        padding: 0.8rem 1.2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        padding: 0.6rem 1.2rem;
     }
 
     .metric-box {
-        text-align: center;
-        padding: 0.4rem;
-        border-radius: 8px;
-        background: color-mix(in srgb, var(--primary) 5%, transparent);
-        border: 1px solid color-mix(in srgb, var(--primary) 10%, transparent);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        background: color-mix(in srgb, var(--primary) 6%, transparent);
+        border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
     }
 
     .mb-val {
         font-family: "Fira Code", monospace;
-        font-size: 1rem;
-        font-weight: 800;
-        color: var(--primary);
-        display: block;
-        line-height: 1.2;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--black);
+        line-height: 1;
     }
 
     .mb-label {
-        font-family: "Fira Code", monospace;
-        font-size: 0;
         display: flex;
-        justify-content: center;
         align-items: center;
     }
 
     .mb-label [data-icon] {
-        font-size: 1.8rem;
+        font-size: 1rem;
         color: var(--primary);
     }
 
@@ -245,37 +245,38 @@ const { post, ageDays } = Astro.props;
         font-size: 1.5rem;
     }
 
-    /* ── Footer ── */
-    .card-footer {
+    .title-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    /* ── Actions ── */
+    .card-actions {
         position: relative;
         z-index: 2;
         display: flex;
-        justify-content: space-between;
+        gap: 0.4rem;
         align-items: center;
-        padding: 0.6rem 1.2rem;
-        border-top: 1px solid var(--gray-light);
     }
 
-    .detail-link {
-        font-family: "Fira Code", monospace;
+    .action-link {
         font-size: 0;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 0.4rem;
+        padding: 0.2rem;
+        color: var(--primary);
         transition: color 0.2s ease, transform 0.2s ease;
     }
 
-    .detail-link [data-icon] {
-        font-size: 2rem;
+    .action-link:hover {
+        color: var(--accent);
+        transform: translateX(2px);
     }
 
-    .detail-link {
-        color: var(--primary);
-    }
-    .detail-link:hover {
-        color: var(--accent);
+    .action-link [data-icon] {
+        font-size: 1.5rem;
     }
 
     @media (max-width: 640px) {

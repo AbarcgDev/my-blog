@@ -12,29 +12,7 @@ const { totalProjects, healthyCount, totalStars, langsCount } = Astro.props;
             Production metrics & health — synced from GitHub
         </p>
     </div>
-    <div class="obs-header-stats">
-        <div class="agg-stat">
-            <span class="agg-val">{totalProjects}</span>
-            <span class="agg-lbl">services</span>
-        </div>
-        <div class="agg-divider"></div>
-        <div class="agg-stat">
-            <span class="agg-val green-text"
-                >{healthyCount}/{totalProjects}
-            </span>
-            <span class="agg-lbl">healthy</span>
-        </div>
-        <div class="agg-divider"></div>
-        <div class="agg-stat">
-            <span class="agg-val">{totalStars}</span>
-            <span class="agg-lbl">stars</span>
-        </div>
-        <div class="agg-divider"></div>
-        <div class="agg-stat">
-            <span class="agg-val">{langsCount}</span>
-            <span class="agg-lbl">langs</span>
-        </div>
-    </div>
+    <!-- Stats moved to sidebar -->
 </section>
 
 <style>
@@ -44,6 +22,9 @@ const { totalProjects, healthyCount, totalStars, langsCount } = Astro.props;
         justify-content: space-between;
         align-items: flex-end;
         gap: 1rem;
+        background: var(--background);
+        padding: 1rem 0 1.5rem 0;
+        margin-top: -1rem;
     }
 
     .obs-header h1 {
@@ -83,42 +64,7 @@ const { totalProjects, healthyCount, totalStars, langsCount } = Astro.props;
         margin: 0.2rem 0 0 0;
     }
 
-    .obs-header-stats {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .agg-stat {
-        text-align: center;
-    }
-
-    .agg-val {
-        font-family: "Fira Code", monospace;
-        font-size: 1.2rem;
-        font-weight: 800;
-        color: var(--primary);
-        display: block;
-        line-height: 1;
-    }
-
-    .green-text {
-        color: #22c55e !important;
-    }
-
-    .agg-lbl {
-        font-family: "Fira Code", monospace;
-        font-size: 0.5rem;
-        color: var(--gray);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .agg-divider {
-        width: 1px;
-        height: 28px;
-        background: var(--gray-light);
-    }
+    /* Stats styles moved to sidebar */
 
     @media (max-width: 640px) {
         .obs-header {

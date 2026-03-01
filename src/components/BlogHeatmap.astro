@@ -7,7 +7,10 @@ const { postsData } = Astro.props;
         <span class="panel-dot"></span>
         <span class="panel-title">Actividad de publicación</span>
     </div>
-    <div class="heatmap-container" id="heatmap"></div>
+    <div class="heatmap-scroll-wrapper">
+        <div class="heatmap-months" id="heatmap-months"></div>
+        <div class="heatmap-container" id="heatmap"></div>
+    </div>
     <div class="heatmap-legend">
         <span class="legend-label">Menos</span>
         <span class="legend-cell" style="opacity:0.15"></span>
@@ -53,11 +56,47 @@ const { postsData } = Astro.props;
     }
 
     /* ═══════════ HEATMAP ═══════════ */
+    .heatmap-scroll-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+
+    /* Custom thin scrollbar */
+    .heatmap-scroll-wrapper::-webkit-scrollbar {
+        height: 6px;
+    }
+    .heatmap-scroll-wrapper::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .heatmap-scroll-wrapper::-webkit-scrollbar-thumb {
+        background: color-mix(in srgb, var(--primary) 30%, transparent);
+        border-radius: 3px;
+    }
+
+    .heatmap-months {
+        display: grid;
+        grid-template-columns: repeat(52, minmax(10px, 1fr));
+        gap: 2px;
+        margin-bottom: 2px;
+        min-width: 600px;
+    }
+
+    .heatmap-months :global(.month-label) {
+        font-family: "Fira Code", monospace;
+        font-size: 0.65rem;
+        color: var(--gray);
+        text-transform: capitalize;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
     .heatmap-container {
         display: grid;
-        grid-template-columns: repeat(52, 1fr);
+        grid-template-columns: repeat(52, minmax(10px, 1fr));
         gap: 2px;
         padding: 0.2rem 0;
+        min-width: 600px;
     }
 
     .heatmap-container :global(.hm-cell) {
@@ -92,15 +131,14 @@ const { postsData } = Astro.props;
     }
 
     @media (max-width: 640px) {
-        .heatmap-container {
-            grid-template-columns: repeat(26, 1fr);
-        }
+        /* Remove previous grid adjustments, the scroll wrapper handles it smoothly now */
     }
 </style>
 
 <script define:vars={{ postsData }}>
     (() => {
         const container = document.getElementById("heatmap");
+        const monthsContainer = document.getElementById("heatmap-months");
         if (!container) return;
 
         const posts = JSON.parse(postsData);
@@ -133,19 +171,58 @@ const { postsData } = Astro.props;
         container.innerHTML = "";
         const maxCount = Math.max(1, ...weeklyData);
 
+        const activeMonths = [];
+        let currentMonth = -1;
+
         weeklyData.forEach((count, i) => {
+            const weekStart = new Date(today);
+            weekStart.setDate(weekStart.getDate() - (51 - i) * 7);
+
+            // Month Label Logic
+            const m = weekStart.getMonth();
+            if (m !== currentMonth) {
+                if (currentMonth !== -1) {
+                    activeMonths[activeMonths.length - 1].span =
+                        i - activeMonths[activeMonths.length - 1].start;
+                }
+                activeMonths.push({
+                    month: weekStart.toLocaleDateString("es-MX", {
+                        month: "short",
+                    }),
+                    start: i,
+                    span: 0,
+                });
+                currentMonth = m;
+            }
+
+            // Cell Rendering
             const cell = document.createElement("div");
             cell.className = "hm-cell";
             if (count > 0) {
                 cell.style.opacity = String(0.25 + (count / maxCount) * 0.75);
             }
-            const weekStart = new Date(today);
-            weekStart.setDate(weekStart.getDate() - (51 - i) * 7);
             cell.title = `Semana del ${weekStart.toLocaleDateString("es-MX", {
                 month: "short",
                 day: "numeric",
             })}: ${count} post${count !== 1 ? "s" : ""}`;
             container.appendChild(cell);
         });
+
+        // Close last span
+        if (activeMonths.length > 0) {
+            activeMonths[activeMonths.length - 1].span =
+                52 - activeMonths[activeMonths.length - 1].start;
+        }
+
+        if (monthsContainer) {
+            monthsContainer.innerHTML = "";
+            activeMonths.forEach((am) => {
+                const label = document.createElement("span");
+                label.className = "month-label";
+                label.textContent = am.month;
+                label.style.gridColumn = `${am.start + 1} / span ${am.span}`;
+                monthsContainer.appendChild(label);
+            });
+        }
     })();
 </script>

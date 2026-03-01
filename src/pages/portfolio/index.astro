@@ -6,6 +6,8 @@ import Header from "../../components/Header.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
 import PortfolioGrid from "../../components/PortfolioGrid.astro";
 import PortfolioHeader from "../../components/PortfolioHeader.astro";
+import PortfolioSidebarStats from "../../components/PortfolioSidebarStats.astro";
+import PortfolioStackGraph from "../../components/PortfolioStackGraph.astro";
 
 const projects = (await getCollection("projects")).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -61,6 +63,14 @@ const totalStars = projects.reduce((s, p) => s + (p.data.stars || 0), 0);
 const uniqueLangs = [
 	...new Set(projects.map((p) => p.data.language).filter((l) => l !== "N/A")),
 ];
+
+// ─── Format graph data ───
+const projectsData = projects.map((p) => ({
+	id: p.id,
+	title: p.data.title,
+	slug: p.id,
+	tags: p.data.tags || [],
+}));
 ---
 
 <!DOCTYPE html>
@@ -71,9 +81,9 @@ const uniqueLangs = [
 			description={SITE_DESCRIPTION}
 		/>
 	</head>
-	<body>
+	<body class="grid-app-body">
 		<Header />
-		<main class="obs-main">
+		<main class="grid-app-main obs-main">
 			<PortfolioHeader
 				totalProjects={totalProjects}
 				healthyCount={healthyCount}
@@ -81,30 +91,161 @@ const uniqueLangs = [
 				langsCount={uniqueLangs.length}
 			/>
 
-			<!-- ═══ PROJECT CARDS ═══ -->
-			{
-				projects.length === 0 ? (
-					<div class="empty-state">
-						<p>
-							No hay servicios. Ejecuta{" "}
-							<code>npm run sync:projects</code>
-						</p>
+			<div class="obs-layout">
+				<!-- ═══ SIDEBAR (320px) ═══ -->
+				<aside class="obs-sidebar">
+					<PortfolioSidebarStats
+						totalProjects={totalProjects}
+						healthyCount={healthyCount}
+						totalStars={totalStars}
+						langsCount={uniqueLangs.length}
+					/>
+					<PortfolioStackGraph
+						projectsData={JSON.stringify(projectsData)}
+					/>
+				</aside>
+
+				<!-- ═══ CONTENT (1fr) ═══ -->
+				<div class="obs-content">
+					<!-- ═══ FILTERS ═══ -->
+					<div class="filter-container">
+						<section class="panel filter-panel">
+							<div class="filter-controls">
+								<div class="filter-header">
+									<span class="panel-dot"></span>
+									<h2 class="panel-title">Proyectos</h2>
+								</div>
+								<div class="filter-actions">
+									<select
+										id="tag-filter"
+										class="filter-select"
+										aria-label="Filtrar por tecnología"
+									>
+										<option value=""
+											>Todas las tecnologías</option
+										>
+										{
+											uniqueLangs.map((tag) => (
+												<option
+													value={tag.toLowerCase()}
+												>
+													{tag}
+												</option>
+											))
+										}
+									</select>
+									<select
+										id="sort-filter"
+										class="filter-select"
+										aria-label="Ordenar por fecha"
+									>
+										<option value="newest"
+											>Más recientes</option
+										>
+										<option value="oldest"
+											>Más antiguos</option
+										>
+									</select>
+								</div>
+								<input
+									type="text"
+									id="search-input"
+									placeholder="Buscar..."
+									class="search-input"
+								/>
+							</div>
+						</section>
 					</div>
-				) : (
-					<PortfolioGrid projects={projectMetrics} />
-				)
-			}
+
+					{
+						projects.length === 0 ? (
+							<div class="empty-state">
+								<p>
+									No hay servicios. Ejecuta{" "}
+									<code>npm run sync:projects</code>
+								</p>
+							</div>
+						) : (
+							<PortfolioGrid projects={projectMetrics} />
+						)
+					}
+				</div>
+			</div>
 		</main>
 		<Footer />
 		<style>
-			.obs-main {
-				width: 100%;
-				max-width: 1000px;
-				margin: 0 auto;
-				padding: 1.5rem 1rem;
+			:global(.grid-app-body) {
+				height: 100vh;
+				overflow: hidden;
 				display: flex;
 				flex-direction: column;
-				gap: 1.2rem;
+				background: var(--background);
+				margin: 0;
+			}
+
+			:global(.grid-app-body) > * {
+				flex-shrink: 0;
+			}
+
+			.grid-app-main {
+				flex: 1;
+				width: 100%;
+				margin: 0 auto;
+				display: flex;
+				flex-direction: column;
+				overflow: hidden; /* Prevent body scroll */
+				padding: 0 1rem;
+			}
+
+			/* ═══ TWO-COLUMN LAYOUT ═══ */
+			.obs-layout {
+				display: grid;
+				grid-template-columns: 320px 1fr;
+				gap: 1.5rem;
+				flex: 1;
+				overflow: hidden; /* Contain scrolling children */
+				padding-bottom: 2rem;
+			}
+
+			.obs-sidebar {
+				display: flex;
+				flex-direction: column;
+				gap: 1.5rem;
+				height: 100%;
+				overflow-y: auto; /* Independent scroll */
+				padding-right: 0.5rem;
+			}
+
+			.obs-sidebar::-webkit-scrollbar {
+				width: 6px;
+			}
+			.obs-sidebar::-webkit-scrollbar-thumb {
+				background-color: var(--gray-light);
+				border-radius: 10px;
+			}
+
+			.obs-content {
+				display: flex;
+				flex-direction: column;
+				gap: 1.5rem;
+				min-width: 0;
+				height: 100%;
+				overflow: hidden; /* Contains inner grid scroll */
+			}
+
+			/* ═══════════ GRID WRAPPER ═══════════ */
+			.obs-grid-wrapper {
+				flex: 1;
+				overflow-y: auto; /* Independent scroll */
+				padding-right: 0.5rem;
+			}
+
+			.obs-grid-wrapper::-webkit-scrollbar {
+				width: 6px;
+			}
+			.obs-grid-wrapper::-webkit-scrollbar-thumb {
+				background-color: var(--primary);
+				border-radius: 10px;
 			}
 
 			/* ═══ EMPTY ═══ */
@@ -117,11 +258,205 @@ const uniqueLangs = [
 				border-radius: 16px;
 			}
 
+			/* ═══════════ PANELS & FILTERS ═══════════ */
+			.filter-container {
+				flex-shrink: 0; /* Ensures filter doesn't squash when grid scrolls */
+				background: var(--background);
+				padding-bottom: 0.5rem;
+				z-index: 10;
+			}
+
+			.panel {
+				background: var(--surface);
+				border: 1px solid var(--gray-light);
+				border-radius: 14px;
+				padding: 1rem 1.2rem;
+				box-shadow: var(--box-shadow);
+			}
+
+			.filter-panel {
+				/* Container handles sticky layout logic now */
+			}
+
+			.filter-controls {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+				flex-wrap: wrap;
+				gap: 1rem;
+			}
+
+			.filter-header {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+
+			.filter-actions {
+				display: flex;
+				align-items: center;
+				gap: 0.8rem;
+				flex-wrap: wrap;
+				flex: 1;
+				justify-content: flex-end;
+			}
+
+			.filter-select {
+				font-family: "Fira Code", monospace;
+				font-size: 0.8rem;
+				padding: 0.5rem 0.8rem;
+				border-radius: 8px;
+				border: 1px solid var(--gray-light);
+				background: var(--background);
+				color: var(--black);
+				outline: none;
+				cursor: pointer;
+				transition: border-color 0.2s ease;
+			}
+
+			.filter-select:focus {
+				border-color: var(--primary);
+			}
+
+			.search-input {
+				font-family: "Fira Code", monospace;
+				font-size: 0.8rem;
+				padding: 0.5rem 0.8rem;
+				border-radius: 8px;
+				border: 1px solid var(--gray-light);
+				background: var(--background);
+				color: var(--black);
+				outline: none;
+				width: 100%;
+				max-width: 250px;
+				transition: border-color 0.2s ease;
+			}
+
+			.search-input:focus {
+				border-color: var(--primary);
+			}
+
+			.panel-header {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				margin-bottom: 0.8rem;
+			}
+
+			.panel-dot {
+				width: 6px;
+				height: 6px;
+				border-radius: 50%;
+				background: var(--primary);
+			}
+
+			.panel-title {
+				font-family: "Fira Code", monospace;
+				font-size: 0.72rem;
+				font-weight: 700;
+				color: var(--black);
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+			}
+
+			@media (max-width: 900px) {
+				:global(.grid-app-body) {
+					height: auto;
+					overflow: visible;
+				}
+				.grid-app-main,
+				.obs-layout,
+				.obs-sidebar,
+				.obs-content,
+				.obs-grid-wrapper {
+					overflow: visible;
+					height: auto;
+				}
+
+				.obs-layout {
+					grid-template-columns: 1fr;
+				}
+			}
+
 			@media (max-width: 640px) {
-				.metrics-grid {
-					grid-template-columns: repeat(2, 1fr);
+				.filter-controls {
+					flex-direction: column;
+					align-items: flex-start;
+				}
+
+				.filter-actions {
+					width: 100%;
+					flex-direction: column;
+					align-items: stretch;
+				}
+
+				.filter-select,
+				.search-input {
+					max-width: 100%;
 				}
 			}
 		</style>
 	</body>
+	<script>
+		// ═══ SEARCH & FILTER ═══
+		(() => {
+			const searchInput = document.getElementById(
+				"search-input"
+			) as HTMLInputElement | null;
+			const tagFilter = document.getElementById(
+				"tag-filter"
+			) as HTMLSelectElement | null;
+			const sortFilter = document.getElementById(
+				"sort-filter"
+			) as HTMLSelectElement | null;
+			const grid = document.getElementById("portfolio-grid");
+			if (!searchInput || !tagFilter || !sortFilter || !grid) return;
+
+			const wrappers = Array.from(
+				grid.querySelectorAll(".portfolio-card-wrapper")
+			);
+
+			function updateView() {
+				const query = searchInput!.value.toLowerCase();
+				const selectedTag = tagFilter!.value;
+				const sortOrder = sortFilter!.value;
+
+				// 1. Filter
+				wrappers.forEach((wrapper) => {
+					const title = wrapper.getAttribute("data-title") || "";
+					const tagsAttr = wrapper.getAttribute("data-tags") || "[]";
+					let tags: string[] = [];
+					try {
+						tags = JSON.parse(tagsAttr).map((t: string) =>
+							t.toLowerCase()
+						);
+					} catch (e) {}
+
+					const matchSearch =
+						title.includes(query) || tags.join(" ").includes(query);
+					const matchTag =
+						selectedTag === "" || tags.includes(selectedTag);
+
+					(wrapper as HTMLElement).style.display =
+						matchSearch && matchTag ? "" : "none";
+				});
+
+				// 2. Sort
+				wrappers.sort((a, b) => {
+					const dateA = parseInt(a.getAttribute("data-date") || "0");
+					const dateB = parseInt(b.getAttribute("data-date") || "0");
+					return sortOrder === "oldest"
+						? dateA - dateB
+						: dateB - dateA;
+				});
+
+				// Re-append to grid
+				wrappers.forEach((w) => grid!.appendChild(w));
+			}
+
+			searchInput.addEventListener("input", updateView);
+			tagFilter.addEventListener("change", updateView);
+			sortFilter.addEventListener("change", updateView);
+		})();
+	</script>
 </html>

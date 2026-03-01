@@ -299,5 +299,83 @@ const { title, description, pubDate, updatedDate, heroImage, tags } =
 				}
 			}
 		</style>
+		<script>
+			import mermaid from "mermaid";
+
+			document.addEventListener("DOMContentLoaded", () => {
+				const isDark = window.matchMedia(
+					"(prefers-color-scheme: dark)"
+				).matches;
+				const rootStyles = getComputedStyle(document.documentElement);
+				const bgColor = rootStyles
+					.getPropertyValue("--background")
+					.trim();
+				const surfaceColor = rootStyles
+					.getPropertyValue("--surface")
+					.trim();
+				const primaryColor = rootStyles
+					.getPropertyValue("--primary")
+					.trim();
+				const accentColor = rootStyles
+					.getPropertyValue("--accent")
+					.trim();
+				const textColor = rootStyles.getPropertyValue("--black").trim();
+				const grayColor = rootStyles.getPropertyValue("--gray").trim();
+				const grayLightColor = rootStyles
+					.getPropertyValue("--gray-light")
+					.trim();
+				const fontFamily =
+					rootStyles.getPropertyValue("font-family").trim() ||
+					'"Fira Code", monospace';
+
+				mermaid.initialize({
+					startOnLoad: false,
+					theme: "base",
+					themeVariables: {
+						fontFamily: fontFamily,
+						primaryColor: surfaceColor,
+						primaryTextColor: textColor,
+						primaryBorderColor: primaryColor,
+						lineColor: grayColor,
+						secondaryColor: bgColor,
+						tertiaryColor: bgColor,
+						mainBkg: surfaceColor,
+						nodeBorder: primaryColor,
+						clusterBkg: bgColor,
+						clusterBorder: grayLightColor,
+						defaultLinkColor: accentColor,
+						labelTextColor: textColor,
+						labelBackground: bgColor,
+						edgeLabelBackground: bgColor,
+						textColor: textColor,
+					},
+				});
+
+				const blocks = document.querySelectorAll(
+					"pre > code.language-mermaid, pre[data-language='mermaid']"
+				);
+				blocks.forEach((block) => {
+					const pre =
+						block.tagName === "PRE" ? block : block.parentElement;
+					if (pre) {
+						const div = document.createElement("div");
+						div.className = "mermaid";
+						div.style.display = "flex";
+						div.style.justifyContent = "center";
+						div.style.margin = "1.5rem 0";
+						const lines = pre.querySelectorAll(".line");
+						div.textContent =
+							lines.length > 0
+								? Array.from(lines)
+										.map((l) => l.textContent)
+										.join("\\n")
+								: pre.textContent;
+						pre.replaceWith(div);
+					}
+				});
+
+				mermaid.run({ querySelector: ".mermaid" });
+			});
+		</script>
 	</body>
 </html>

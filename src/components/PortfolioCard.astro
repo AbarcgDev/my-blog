@@ -28,7 +28,7 @@ const { project } = Astro.props;
         <span class="lang-glyph">
             <Icon name={getLangIcon(project.data.language || "default")} />
         </span>
-        <div>
+        <div class="title-content">
             <h2 class="card-name">
                 {project.data.title}
             </h2>
@@ -47,6 +47,24 @@ const { project } = Astro.props;
                     </div>
                 )
             }
+        </div>
+        <div class="card-actions">
+            <a
+                href={project.data.repoUrl}
+                target="_blank"
+                rel="noopener"
+                class="action-link repo-link"
+                title="Repository"
+            >
+                <Icon name="mdi:github" />
+            </a>
+            <a
+                href={`/portfolio/${project.id}/`}
+                class="action-link detail-link"
+                title="Ver detalle"
+            >
+                <Icon name="mdi:arrow-right" />
+            </a>
         </div>
     </div>
 
@@ -76,26 +94,6 @@ const { project } = Astro.props;
                 <Icon name="mdi:package-variant" />
             </span>
         </div>
-    </div>
-
-    {/* ── Footer ── */}
-    <div class="card-footer">
-        <a
-            href={project.data.repoUrl}
-            target="_blank"
-            rel="noopener"
-            class="repo-link"
-            title="Repository"
-        >
-            <Icon name="mdi:github" />
-        </a>
-        <a
-            href={`/portfolio/${project.id}/`}
-            class="detail-link"
-            title="Ver detalle"
-        >
-            <Icon name="mdi:arrow-right" />
-        </a>
     </div>
 </article>
 
@@ -222,39 +220,37 @@ const { project } = Astro.props;
 
     /* ── Metrics grid ── */
     .metrics-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 0.5rem;
-        padding: 0.8rem 1.2rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        padding: 0.6rem 1.2rem;
     }
 
     .metric-box {
-        text-align: center;
-        padding: 0.4rem;
-        border-radius: 8px;
-        background: color-mix(in srgb, var(--primary) 5%, transparent);
-        border: 1px solid color-mix(in srgb, var(--primary) 10%, transparent);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.25rem 0.6rem;
+        border-radius: 6px;
+        background: color-mix(in srgb, var(--primary) 6%, transparent);
+        border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
     }
 
     .mb-val {
         font-family: "Fira Code", monospace;
-        font-size: 1rem;
-        font-weight: 800;
-        color: var(--primary);
-        display: block;
-        line-height: 1.2;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--black);
+        line-height: 1;
     }
 
     .mb-label {
-        font-family: "Fira Code", monospace;
-        font-size: 0;
         display: flex;
-        justify-content: center;
         align-items: center;
     }
 
     .mb-label [data-icon] {
-        font-size: 1.8rem;
+        font-size: 1rem;
         color: var(--primary);
     }
 
@@ -284,31 +280,32 @@ const { project } = Astro.props;
         font-size: 1.5rem;
     }
 
-    /* ── Footer ── */
-    .card-footer {
+    .title-content {
+        flex: 1;
+        min-width: 0;
+    }
+
+    /* ── Actions ── */
+    .card-actions {
         position: relative;
         z-index: 2;
         display: flex;
-        justify-content: space-between;
+        gap: 0.4rem;
         align-items: center;
-        padding: 0.6rem 1.2rem;
-        border-top: 1px solid var(--gray-light);
     }
 
-    .repo-link,
-    .detail-link {
-        font-family: "Fira Code", monospace;
+    .action-link {
         font-size: 0;
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 0.4rem;
+        padding: 0.2rem;
         transition: color 0.2s ease, transform 0.2s ease;
     }
-    .repo-link [data-icon],
-    .detail-link [data-icon] {
-        font-size: 2rem;
+
+    .action-link [data-icon] {
+        font-size: 1.5rem;
     }
 
     .repo-link {
@@ -316,12 +313,14 @@ const { project } = Astro.props;
     }
     .repo-link:hover {
         color: var(--primary);
+        transform: scale(1.1);
     }
     .detail-link {
         color: var(--primary);
     }
     .detail-link:hover {
         color: var(--accent);
+        transform: translateX(2px);
     }
 
     @media (max-width: 640px) {

@@ -21,12 +21,15 @@
 		"@fontsource/fira-sans": "^5.2.7",
 		"astro": "^5.17.1",
 		"astro-icon": "^1.1.5",
+		"d3": "^7.9.0",
+		"mermaid": "^11.12.3",
 		"reading-time": "^1.5.0",
 		"sharp": "^0.34.3"
 	},
 	"devDependencies": {
 		"@iconify-json/devicon": "^1.2.59",
 		"@iconify-json/mdi": "^1.2.3",
+		"@types/d3": "^7.4.3",
 		"@types/node": "^25.3.2",
 		"autoprefixer": "^10.4.27",
 		"postcss": "^8.5.6",

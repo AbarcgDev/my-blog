@@ -164,8 +164,45 @@ input {
 	font-size: 16px;
 }
 
+/* ═══ TABLES ═══ */
 table {
 	width: 100%;
+	border-collapse: collapse;
+	margin: 2em 0;
+	font-size: 0.95em;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: var(--box-shadow);
+	background: var(--surface);
+}
+
+table thead tr {
+	background-color: var(--primary);
+	color: var(--surface);
+	text-align: left;
+}
+
+table th,
+table td {
+	padding: 12px 15px;
+	border-bottom: 1px solid var(--gray-light);
+}
+
+table tbody tr {
+	border-bottom: 1px solid var(--gray-light);
+	transition: background-color 0.2s ease;
+}
+
+table tbody tr:nth-of-type(even) {
+	background-color: color-mix(in srgb, var(--surface), var(--gray-light) 30%);
+}
+
+table tbody tr:hover {
+	background-color: color-mix(in srgb, var(--surface), var(--gray-light) 60%);
+}
+
+table tbody tr:last-of-type {
+	border-bottom: 2px solid var(--primary);
 }
 
 img {
