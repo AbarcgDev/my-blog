@@ -5,6 +5,9 @@ import '../styles/global.css';
 import type { ImageMetadata } from 'astro';
 import FallbackImage from '../assets/blog-placeholder-1.jpg';
 import { SITE_TITLE } from '../consts';
+import '@fontsource/fira-sans'
+import '@fontsource/fira-code'
+
 
 interface Props {
 	title: string;
@@ -35,7 +38,6 @@ const { title, description, image = FallbackImage } = Astro.props;
 <!-- Font preloads -->
 <link rel="preload" href="/fonts/atkinson-regular.woff" as="font" type="font/woff" crossorigin />
 <link rel="preload" href="/fonts/atkinson-bold.woff" as="font" type="font/woff" crossorigin />
-
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 

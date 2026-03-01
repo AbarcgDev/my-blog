@@ -3,14 +3,15 @@ import { defineCollection, z } from 'astro:content';
 const blog = defineCollection({
   type: 'content',
   schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    pubDate: z.coerce.date(), // La de publicación sí la dejamos manual para tener control
+    title: z.string().max(70, "El título es muy largo para SEO"), // Validación de longitud
+    description: z.string().min(50, "La descripción debe ser más detallada"),
+    pubDate: z.coerce.date(),
     heroImage: z.string().optional(),
-    // updatedDate: z.coerce.date().optional(), <-- COMENTA O BORRA ESTO
+    tags: z.array(z.string()).default(['General']),
+    // Draft: Para que puedas escribir borradores sin que se publiquen en el dominio real
+    draft: z.boolean().default(false),
   }),
 });
-
 
 const projects = defineCollection({
   type: 'content',
