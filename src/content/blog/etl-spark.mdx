@@ -1,0 +1,34 @@
+---
+title: "ETL con Apache Spark y Delta Lake"
+description: "Implementación de un pipeline ETL escalable usando PySpark y Delta Lake para procesar millones de registros con control de calidad."
+pubDate: "2026-02-10"
+tags: ["spark", "python", "etl", "delta-lake"]
+complexity: 0.7
+readingTime: 9
+---
+
+## El Problema
+
+Procesar 50M de registros diarios desde múltiples fuentes con validación de schema y deduplicación.
+
+### Stack
+
+- **PySpark** para transformaciones distribuidas
+- **Delta Lake** para ACID transactions y time travel
+- **Airflow** para orquestación del DAG
+
+```python
+from pyspark.sql import SparkSession
+from delta.tables import DeltaTable
+
+spark = SparkSession.builder \
+    .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension") \
+    .getOrCreate()
+
+df = spark.read.format("delta").load("s3://lake/raw/events")
+```
+
+## Resultados
+
+- Latencia reducida de 4h a 25min
+- 99.8% de completitud de datos

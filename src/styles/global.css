@@ -5,40 +5,42 @@
  */
 
 :root {
-    /* Base */
-    --background: #f0fdfe; /* Un poco más suave para la vista */
-    --surface: #ffffff;    /* Para los "cards" o cajas */
-    
-    /* Brand */
-    --primary: #00c0c7;
-    --primary-dark: #008a8f;
-    
-    /* Accent (El naranja "AI") */
-    --accent: #C74D00;
-    --accent-light: #ff8a43;
-    
-    /* Neutrals */
-    --black: #1a2626;
-    --gray-dark: #003E40;
-    --gray: #4a6b6c;
-    --gray-light: #e0f2f3;
+	/* Base */
+	--background: #f0fdfe;
+	/* Un poco más suave para la vista */
+	--surface: #ffffff;
+	/* Para los "cards" o cajas */
 
-		--box-shadow: 
-				0 10px 15px -3px color-mix(in srgb, var(--gray-light), transparent 80%),
-				0 4px 6px -2px color-mix(in srgb, var(--gray-light), transparent 90%);
+	/* Brand */
+	--primary: #00c0c7;
+	--primary-dark: #008a8f;
+
+	/* Accent (El naranja "AI") */
+	--accent: #C74D00;
+	--accent-light: #ff8a43;
+
+	/* Neutrals */
+	--black: #1a2626;
+	--gray-dark: #003E40;
+	--gray: #4a6b6c;
+	--gray-light: #e0f2f3;
+
+	--box-shadow:
+		0 10px 15px -3px color-mix(in srgb, var(--gray-light), transparent 80%),
+		0 4px 6px -2px color-mix(in srgb, var(--gray-light), transparent 90%);
 }
 
 @media (prefers-color-scheme: dark) {
-    :root {
-        --background: #051213;
-        --surface: #0a1f20;
-        --black: #e6fafa;
-        --gray-light: #1a2f30;
-        --primary: #00e5ee;
-				--box-shadow: 
-							0 20px 25px -5px rgba(0, 0, 0, 0.5),
-							0 10px 10px -5px color-mix(in srgb, var(--gray-light), black 50%);
-    }
+	:root {
+		--background: #051213;
+		--surface: #0a1f20;
+		--black: #e6fafa;
+		--gray-light: #1a2f30;
+		--primary: #00e5ee;
+		--box-shadow:
+			0 20px 25px -5px rgba(0, 0, 0, 0.5),
+			0 10px 10px -5px color-mix(in srgb, var(--gray-light), black 50%);
+	}
 }
 
 
@@ -49,6 +51,7 @@
 	font-style: normal;
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "Atkinson";
 	src: url("/fonts/atkinson-bold.woff") format("woff");
@@ -56,6 +59,7 @@
 	font-style: normal;
 	font-display: swap;
 }
+
 body {
 	font-family: "Fira Sans", sans-serif;
 	margin: 0;
@@ -67,16 +71,18 @@ body {
 	overflow-wrap: break-word;
 	font-size: 20px;
 	line-height: 1.7;
-  color: var(--black);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	color: var(--black);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
+
 main {
 	width: 720px;
 	max-width: calc(100% - 2em);
 	margin: auto;
 	padding: 3em 1em;
 }
+
 h1,
 h2,
 h3,
@@ -87,87 +93,107 @@ h6 {
 	color: rgb(var(--black));
 	line-height: 1.2;
 }
+
 h1 {
 	font-size: 3.052em;
 }
+
 h2 {
 	font-size: 2.441em;
 }
+
 h3 {
 	font-size: 1.953em;
 }
+
 h4 {
 	font-size: 1.563em;
 }
+
 h5 {
 	font-size: 1.25em;
 }
+
 strong,
 b {
 	font-weight: 700;
 }
+
 a {
-    color: var(--primary);
-    text-decoration: none;
-    transition: all 0.2s ease;
-    border-bottom: 1px solid transparent;
+	color: var(--primary);
+	text-decoration: none;
+	transition: all 0.2s ease;
+	border-bottom: 1px solid transparent;
 }
 
 a:hover {
-    color: var(--accent);
-    border-bottom: 1px solid var(--accent);
+	color: var(--accent);
+	border-bottom: 1px solid var(--accent);
 }
+
 p {
 	margin-bottom: 1em;
 }
+
 .prose p {
 	margin-bottom: 2em;
 }
+
 textarea {
 	width: 100%;
 	font-size: 16px;
 }
+
 input {
 	font-size: 16px;
 }
+
 table {
 	width: 100%;
 }
+
 img {
 	max-width: 100%;
 	height: auto;
 	border-radius: 8px;
 }
+
 pre {
-    background-color: var(--black);
-    color: var(--gray-light);
-    border: 1px solid var(--gray-dark);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+	background-color: var(--black);
+	color: var(--gray-light);
+	border: 1px solid var(--gray-dark);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 code {
-    background-color: var(--gray-light);
-    color: var(--gray-dark);
-    font-family: 'Fira Code', monospace; /* Cambia a una mono pro */
-    font-size: 0.9em;
+	background-color: var(--gray-light);
+	color: var(--gray-dark);
+	font-family: 'Fira Code', monospace;
+	/* Cambia a una mono pro */
+	font-size: 0.9em;
 }
-pre > code {
+
+pre>code {
 	all: unset;
 }
+
 blockquote {
 	border-left: 4px solid var(--accent);
 	padding: 0 0 0 20px;
 	margin: 0;
 	font-size: 1.333em;
 }
+
 hr {
 	border: none;
 	border-top: 1px solid rgb(var(--gray-light));
 }
+
 @media (max-width: 720px) {
 	body {
 		font-size: 18px;
 	}
+
 	main {
 		padding: 1em;
 	}
@@ -189,4 +215,11 @@ hr {
 	clip-path: inset(50%);
 	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
 	white-space: nowrap;
+}
+
+/* Escalar los íconos SVG de astro-icon para coincidir con la presencia visual de tipografías (Nerd Fonts) */
+[data-icon] {
+	font-size: 1.25em;
+	vertical-align: middle;
+	display: inline-block;
 }

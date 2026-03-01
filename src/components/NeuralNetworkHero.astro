@@ -1,0 +1,563 @@
+---
+// src/components/NeuralNetworkHero.astro
+const { name = "Abargdev", role = "AI & Data Enthusiast" } = Astro.props;
+---
+
+<section class="nn-hero">
+    <canvas id="neural-canvas"></canvas>
+    <div class="hero-overlay">
+        <div class="hero-content">
+            <p class="hero-greeting">Hola, soy</p>
+            <h1 class="hero-name">{name}</h1>
+            <p class="hero-role">{role}</p>
+            <!-- <div class="hero-metrics">
+                <div class="metric">
+                    <span class="metric-value" data-target="Iniciando">0</span>
+                    <span class="metric-label">Años en Data & AI</span>
+                </div>
+                <div class="metric-divider"></div>
+                <div class="metric">
+                    <span class="metric-value" data-target="Multiples">0</span>
+                    <span class="metric-label">Tecnologías</span>
+                </div>
+                <div class="metric-divider"></div>
+                <div class="metric">
+                    <span class="metric-value" data-target="Desarrollando"
+                        >0</span
+                    >
+                    <span class="metric-label">Proyectos</span>
+                </div>
+            </div> -->
+        </div>
+    </div>
+    <!-- Layer labels rendered on top -->
+    <div class="layer-labels" id="layer-labels"></div>
+</section>
+
+<style>
+    .nn-hero {
+        position: relative;
+        width: 100%;
+        min-height: 440px;
+        border-radius: 20px;
+        overflow: hidden;
+        background: var(--background);
+        border: none;
+        box-shadow: none;
+    }
+
+    #neural-canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .hero-overlay {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 440px;
+        padding: 2rem;
+        pointer-events: none;
+    }
+
+    .hero-content {
+        text-align: center;
+        pointer-events: auto;
+    }
+
+    .hero-greeting {
+        font-family: "Fira Code", monospace;
+        font-size: 0.95rem;
+        color: var(--accent);
+        margin: 0 0 0.25rem 0;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        opacity: 0;
+        animation: fadeUp 0.6s ease 0.3s forwards;
+    }
+
+    .hero-name {
+        font-family: "Fira Code", monospace;
+        font-size: 4rem;
+        font-weight: 800;
+        color: var(--black);
+        margin: 0;
+        line-height: 1;
+        text-shadow: none;
+        opacity: 0;
+        animation: fadeUp 0.6s ease 0.5s forwards;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .hero-name {
+            color: #ffffff;
+            text-shadow: 0 0 40px
+                color-mix(in srgb, var(--primary) 30%, transparent);
+        }
+        .hero-greeting {
+            color: var(--primary);
+        }
+    }
+
+    .hero-role {
+        font-family: "Fira Code", monospace;
+        font-size: 1rem;
+        color: var(--gray);
+        margin: 0.5rem 0 0 0;
+        opacity: 0;
+        animation: fadeUp 0.6s ease 0.7s forwards;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .hero-role {
+            color: color-mix(in srgb, var(--primary) 70%, #ffffff);
+        }
+    }
+
+    .hero-metrics {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 2rem;
+        opacity: 0;
+        animation: fadeUp 0.6s ease 1s forwards;
+    }
+
+    .metric {
+        text-align: center;
+    }
+
+    .metric-value {
+        font-family: "Fira Code", monospace;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--black);
+        display: block;
+        line-height: 1;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .metric-value {
+            color: #ffffff;
+        }
+    }
+
+    .metric-label {
+        font-family: "Fira Code", monospace;
+        font-size: 0.65rem;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-top: 0.3rem;
+        display: block;
+    }
+
+    .metric-divider {
+        width: 1px;
+        height: 40px;
+        background: var(--gray-light);
+    }
+
+    /* Layer labels */
+    .layer-labels {
+        position: absolute;
+        bottom: 12px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        padding: 0 6%;
+        z-index: 3;
+        pointer-events: none;
+    }
+
+    .layer-labels :global(.layer-label) {
+        font-family: "Fira Code", monospace;
+        font-size: 0.55rem;
+        color: color-mix(in srgb, var(--accent) 50%, transparent);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .layer-labels :global(.layer-label) {
+            color: rgba(0, 229, 238, 0.45);
+        }
+    }
+
+    @keyframes fadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(16px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 600px) {
+        .nn-hero {
+            min-height: 380px;
+        }
+        .hero-overlay {
+            min-height: 380px;
+        }
+        .hero-name {
+            font-size: 2.5rem;
+        }
+        .hero-metrics {
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .metric-value {
+            font-size: 1.4rem;
+        }
+        .layer-labels {
+            display: none;
+        }
+    }
+</style>
+
+<script>
+    // ─── Neural Network: Activation Propagation ────────────────
+    const canvas = document.getElementById(
+        "neural-canvas"
+    ) as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d")!;
+
+    let W: number, H: number;
+    const DPR = window.devicePixelRatio || 1;
+
+    // ─── Theme-adaptive colors ───
+    // Light mode: accent orange  |  Dark mode: primary cyan
+    const darkMQ = window.matchMedia("(prefers-color-scheme: dark)");
+    let isDark = darkMQ.matches;
+
+    function getColors() {
+        if (isDark) {
+            return {
+                nodeR: 0,
+                nodeG: 229,
+                nodeB: 238, // cyan
+                baseR: 0,
+                baseG: 192,
+                baseB: 199, // subtle cyan
+                whiteR: 255,
+                whiteG: 255,
+                whiteB: 255,
+            };
+        } else {
+            return {
+                nodeR: 199,
+                nodeG: 77,
+                nodeB: 0, // accent #C74D00
+                baseR: 180,
+                baseG: 70,
+                baseB: 0, // subtle accent
+                whiteR: 120,
+                whiteG: 40,
+                whiteB: 0, // dark orange core
+            };
+        }
+    }
+
+    let C = getColors();
+    darkMQ.addEventListener("change", (e) => {
+        isDark = e.matches;
+        C = getColors();
+    });
+
+    const architecture = [
+        { name: "Input", nodes: 6 },
+        { name: "Embed", nodes: 8 },
+        { name: "Attn", nodes: 6 },
+        { name: "FFN", nodes: 8 },
+        { name: "Attn", nodes: 6 },
+        { name: "FFN", nodes: 8 },
+        { name: "Output", nodes: 4 },
+    ];
+
+    interface Node {
+        x: number;
+        y: number;
+        baseX: number;
+        baseY: number;
+        r: number;
+        layer: number;
+        activation: number; // 0–1, current glow
+        targetAct: number; // target activation to ease toward
+    }
+
+    // Connection activation stored per edge
+    interface Connection {
+        from: number;
+        to: number;
+        activation: number;
+    }
+
+    let nodes: Node[] = [];
+    let connections: Connection[] = [];
+    let layerStartIdx: number[] = [];
+
+    function resize() {
+        const rect = canvas.getBoundingClientRect();
+        W = rect.width;
+        H = rect.height;
+        canvas.width = W * DPR;
+        canvas.height = H * DPR;
+        ctx.scale(DPR, DPR);
+        buildNetwork();
+    }
+
+    function buildNetwork() {
+        nodes = [];
+        connections = [];
+        layerStartIdx = [];
+
+        const numLayers = architecture.length;
+        const padX = W * 0.08;
+        const layerSpacing = (W - padX * 2) / (numLayers - 1);
+        const padY = H * 0.12;
+        const usableH = H - padY * 2;
+
+        for (let l = 0; l < numLayers; l++) {
+            layerStartIdx.push(nodes.length);
+            const count = architecture[l].nodes;
+            const x = padX + l * layerSpacing;
+            const nodeSpacing = usableH / (count + 1);
+
+            for (let i = 0; i < count; i++) {
+                const y = padY + nodeSpacing * (i + 1);
+                const isIO = l === 0 || l === numLayers - 1;
+                nodes.push({
+                    x,
+                    y,
+                    baseX: x,
+                    baseY: y,
+                    r: isIO ? 5 : 3.5,
+                    layer: l,
+                    activation: 0,
+                    targetAct: 0,
+                });
+            }
+        }
+
+        // Build connection list between adjacent layers
+        for (let l = 0; l < numLayers - 1; l++) {
+            const sIdx = layerStartIdx[l];
+            const eIdx = layerStartIdx[l + 1];
+            const sCount = architecture[l].nodes;
+            const eCount = architecture[l + 1].nodes;
+            for (let i = 0; i < sCount; i++) {
+                for (let j = 0; j < eCount; j++) {
+                    connections.push({
+                        from: sIdx + i,
+                        to: eIdx + j,
+                        activation: 0,
+                    });
+                }
+            }
+        }
+
+        // Render layer labels
+        const labelsEl = document.getElementById("layer-labels");
+        if (labelsEl) {
+            labelsEl.innerHTML = architecture
+                .map((a) => `<span class="layer-label">${a.name}</span>`)
+                .join("");
+        }
+    }
+
+    // ─── Fire a forward pass: activate random input neurons ───
+    function fireForwardPass() {
+        // Pick 2-4 random input neurons to activate
+        const inputCount = architecture[0].nodes;
+        const numToFire = 2 + Math.floor(Math.random() * 3);
+        const fired = new Set<number>();
+        for (let i = 0; i < numToFire; i++) {
+            fired.add(Math.floor(Math.random() * inputCount));
+        }
+        fired.forEach((idx) => {
+            nodes[idx].targetAct = 1;
+        });
+    }
+
+    // Schedule forward passes at intervals
+    let lastFire = 0;
+    const fireInterval = 1800; // ms between forward passes
+
+    function draw(time: number) {
+        ctx.clearRect(0, 0, W, H);
+
+        // Fire new forward pass periodically
+        if (time - lastFire > fireInterval) {
+            fireForwardPass();
+            lastFire = time;
+        }
+
+        // ─── Update activations ───
+        // Propagate: if a node has activation, push it to next layer nodes
+        for (const conn of connections) {
+            const srcAct = nodes[conn.from].activation;
+            if (srcAct > 0.08) {
+                // Stronger propagation so activation reaches all layers
+                const weight = 0.5 + Math.random() * 0.4;
+                nodes[conn.to].targetAct = Math.max(
+                    nodes[conn.to].targetAct,
+                    srcAct * weight
+                );
+                // Connection glows based on source activation
+                conn.activation = Math.max(
+                    conn.activation,
+                    srcAct * weight * 0.9
+                );
+            }
+        }
+
+        // Ease activations toward targets, then decay
+        for (const node of nodes) {
+            // Ease toward target
+            node.activation += (node.targetAct - node.activation) * 0.15;
+            // Slower decay so signal propagates further
+            node.targetAct *= 0.96;
+            // Clamp
+            if (node.activation < 0.01) node.activation = 0;
+
+            // Subtle breathing position
+            node.x =
+                node.baseX + Math.sin(time * 0.0008 + node.baseY * 0.015) * 1.2;
+            node.y =
+                node.baseY + Math.cos(time * 0.0006 + node.baseX * 0.01) * 0.8;
+        }
+
+        // Decay connection activations
+        for (const conn of connections) {
+            conn.activation *= 0.93;
+            if (conn.activation < 0.01) conn.activation = 0;
+        }
+
+        // ─── Draw connections ───
+        for (const conn of connections) {
+            const a = nodes[conn.from];
+            const b = nodes[conn.to];
+            const act = conn.activation;
+
+            // Base connection (always visible, very subtle)
+            const baseAlpha = 0.025;
+            // Active connection: brighter
+            const alpha = baseAlpha + act * 0.55;
+
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+
+            if (act > 0.05) {
+                // Glowing connection
+                const grad = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
+                grad.addColorStop(
+                    0,
+                    `rgba(${C.nodeR}, ${C.nodeG}, ${C.nodeB}, ${alpha * 0.6})`
+                );
+                grad.addColorStop(
+                    0.5,
+                    `rgba(${C.nodeR}, ${C.nodeG}, ${C.nodeB}, ${alpha})`
+                );
+                grad.addColorStop(
+                    1,
+                    `rgba(${C.nodeR}, ${C.nodeG}, ${C.nodeB}, ${alpha * 0.6})`
+                );
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 0.8 + act * 1.5;
+            } else {
+                ctx.strokeStyle = `rgba(${C.baseR}, ${C.baseG}, ${C.baseB}, ${baseAlpha})`;
+                ctx.lineWidth = 0.5;
+            }
+
+            ctx.stroke();
+        }
+
+        // ─── Draw nodes ───
+        for (const node of nodes) {
+            const act = node.activation;
+            const isIO =
+                node.layer === 0 || node.layer === architecture.length - 1;
+
+            // Large outer glow when activated
+            if (act > 0.1) {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.r * 5 + act * 8, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${C.nodeR}, ${C.nodeG}, ${C.nodeB}, ${
+                    0.06 * act
+                })`;
+                ctx.fill();
+
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.r * 3, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${C.nodeR}, ${C.nodeG}, ${C.nodeB}, ${
+                    0.12 * act
+                })`;
+                ctx.fill();
+            }
+
+            // Node ring
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.r + 1.5, 0, Math.PI * 2);
+            ctx.strokeStyle = `rgba(${C.nodeR}, ${C.nodeG}, ${C.nodeB}, ${
+                0.12 + act * 0.6
+            })`;
+            ctx.lineWidth = 1 + act * 0.5;
+            ctx.stroke();
+
+            // Node fill
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.r, 0, Math.PI * 2);
+            const fillAlpha = (isIO ? 0.2 : 0.1) + act * 0.7;
+            ctx.fillStyle = `rgba(${C.nodeR}, ${C.nodeG}, ${C.nodeB}, ${fillAlpha})`;
+            ctx.fill();
+
+            // Bright core when activated
+            if (act > 0.15) {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.r * 0.5, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${C.whiteR}, ${C.whiteG}, ${C.whiteB}, ${
+                    0.3 + act * 0.7
+                })`;
+                ctx.fill();
+            }
+        }
+
+        requestAnimationFrame(draw);
+    }
+
+    // Counter animation
+    function animateCounters() {
+        document
+            .querySelectorAll(".metric-value[data-target]")
+            .forEach((el) => {
+                const target = parseInt(el.getAttribute("data-target") || "0");
+                const duration = 1500;
+                const start = performance.now();
+                function tick(now: number) {
+                    const progress = Math.min((now - start) / duration, 1);
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    el.textContent = Math.round(eased * target) + "+";
+                    if (progress < 1) requestAnimationFrame(tick);
+                }
+                setTimeout(() => requestAnimationFrame(tick), 1200);
+            });
+    }
+
+    // Init
+    resize();
+    requestAnimationFrame(draw);
+    animateCounters();
+    window.addEventListener("resize", resize);
+</script>

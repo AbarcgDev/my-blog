@@ -5,11 +5,14 @@ import sitemap from '@astrojs/sitemap';
 import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
 import { execSync } from 'child_process';
+import tailwind from "@astrojs/tailwind"
+
+import icon from 'astro-icon';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://example.com',
-  integrations: [mdx(), sitemap()],
+  integrations: [mdx(), sitemap(), tailwind(), icon()],
   adapter: cloudflare({
     platformProxy: {
       enabled: true

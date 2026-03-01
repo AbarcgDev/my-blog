@@ -1,0 +1,95 @@
+---
+const { totalPosts, topicsCount, readingTotal } = Astro.props;
+---
+
+<section class="blog-header">
+    <div>
+        <h1><span class="accent-dot"></span> Blog</h1>
+        <p class="subtitle">
+            Reflexiones sobre Data Engineering, IA y el stack moderno
+        </p>
+    </div>
+    <div class="header-stats">
+        <div class="h-stat">
+            <span class="h-stat-val">{totalPosts}</span>
+            <span class="h-stat-lbl">posts</span>
+        </div>
+        <div class="h-stat">
+            <span class="h-stat-val">{topicsCount}</span>
+            <span class="h-stat-lbl">topics</span>
+        </div>
+        <div class="h-stat">
+            <span class="h-stat-val">{readingTotal}</span>
+            <span class="h-stat-lbl">min read</span>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* ═══════════ HEADER ═══════════ */
+    .blog-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 1rem;
+    }
+
+    .blog-header h1 {
+        font-family: "Fira Code", monospace;
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: var(--black);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .accent-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: inline-block;
+    }
+
+    .subtitle {
+        font-family: "Fira Code", monospace;
+        font-size: 0.72rem;
+        color: var(--gray);
+        margin: 0.2rem 0 0 0;
+    }
+
+    .header-stats {
+        display: flex;
+        gap: 1.5rem;
+    }
+
+    .h-stat {
+        text-align: center;
+    }
+
+    .h-stat-val {
+        font-family: "Fira Code", monospace;
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--primary);
+        display: block;
+        line-height: 1;
+    }
+
+    .h-stat-lbl {
+        font-family: "Fira Code", monospace;
+        font-size: 0.55rem;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    @media (max-width: 640px) {
+        .blog-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>

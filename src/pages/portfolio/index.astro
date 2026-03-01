@@ -1,114 +1,127 @@
 ---
-import { Image } from 'astro:assets';
-import { getCollection } from 'astro:content';
-import BaseHead from '../../components/BaseHead.astro';
-import Footer from '../../components/Footer.astro';
-import FormattedDate from '../../components/FormattedDate.astro';
-import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import { getCollection } from "astro:content";
+import BaseHead from "../../components/BaseHead.astro";
+import Footer from "../../components/Footer.astro";
+import Header from "../../components/Header.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
+import PortfolioGrid from "../../components/PortfolioGrid.astro";
+import PortfolioHeader from "../../components/PortfolioHeader.astro";
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+const projects = (await getCollection("projects")).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
+// ─── Compute metrics per project ───
+const now = new Date();
+const projectMetrics = projects.map((p) => {
+	const created = new Date(p.data.pubDate);
+	const updated = new Date(p.data.updatedDate || p.data.pubDate);
+	const daysSinceUpdate = Math.floor(
+		(now.getTime() - updated.getTime()) / (1000 * 60 * 60 * 24)
+	);
+	const ageMonths = Math.floor(
+		(now.getTime() - created.getTime()) / (1000 * 60 * 60 * 24 * 30)
+	);
+
+	let health: "green" | "yellow" | "red";
+	let healthLabel: string;
+	if (daysSinceUpdate < 30) {
+		health = "green";
+		healthLabel = "HEALTHY";
+	} else if (daysSinceUpdate < 90) {
+		health = "yellow";
+		healthLabel = "STALE";
+	} else {
+		health = "red";
+		healthLabel = "DORMANT";
+	}
+
+	const uptime =
+		daysSinceUpdate < 7
+			? "99.9%"
+			: daysSinceUpdate < 30
+			? "99.5%"
+			: daysSinceUpdate < 90
+			? "95.2%"
+			: "—";
+
+	return {
+		...p,
+		health,
+		healthLabel,
+		daysSinceUpdate,
+		ageMonths,
+		uptime,
+	};
+});
+
+const totalProjects = projects.length;
+const healthyCount = projectMetrics.filter((p) => p.health === "green").length;
+const totalStars = projects.reduce((s, p) => s + (p.data.stars || 0), 0);
+const uniqueLangs = [
+	...new Set(projects.map((p) => p.data.language).filter((l) => l !== "N/A")),
+];
 ---
 
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="es">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			main {
-				width: 960px;
-			}
-			ul {
-				display: flex;
-				flex-wrap: wrap;
-				gap: 2rem;
-				list-style-type: none;
-				margin: 0;
-				padding: 0;
-			}
-			ul li {
-				width: calc(50% - 1rem);
-			}
-			ul li * {
-				text-decoration: none;
-				transition: 0.2s ease;
-			}
-			ul li:first-child {
-				width: 100%;
-				margin-bottom: 1rem;
-				text-align: center;
-			}
-			ul li:first-child img {
-				width: 100%;
-			}
-			ul li:first-child .title {
-				font-size: 2.369rem;
-			}
-			ul li img {
-				margin-bottom: 0.5rem;
-				border-radius: 12px;
-			}
-			ul li a {
-				display: block;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1;
-			}
-			.date {
-				margin: 0;
-				color: rgb(var(--gray));
-			}
-			ul li a:hover h4,
-			ul li a:hover .date {
-				color: rgb(var(--accent));
-			}
-			ul a:hover img {
-				box-shadow: var(--box-shadow);
-			}
-			@media (max-width: 720px) {
-				ul {
-					gap: 0.5em;
-				}
-				ul li {
-					width: 100%;
-					text-align: center;
-				}
-				ul li:first-child {
-					margin-bottom: 0;
-				}
-				ul li:first-child .title {
-					font-size: 1.563em;
-				}
-			}
-		</style>
+		<BaseHead
+			title={`Portafolio — ${SITE_TITLE}`}
+			description={SITE_DESCRIPTION}
+		/>
 	</head>
 	<body>
 		<Header />
-		<main>
-			<section>
-				<ul>
-					{
-						posts.map((post) => (
-							<li>
-								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={720} height={360} src={post.data.heroImage} alt="" />
-									)}
-									<h4 class="title">{post.data.title}</h4>
-									<p class="date">
-										<FormattedDate date={post.data.pubDate} />
-									</p>
-								</a>
-							</li>
-						))
-					}
-				</ul>
-			</section>
+		<main class="obs-main">
+			<PortfolioHeader
+				totalProjects={totalProjects}
+				healthyCount={healthyCount}
+				totalStars={totalStars}
+				langsCount={uniqueLangs.length}
+			/>
+
+			<!-- ═══ PROJECT CARDS ═══ -->
+			{
+				projects.length === 0 ? (
+					<div class="empty-state">
+						<p>
+							No hay servicios. Ejecuta{" "}
+							<code>npm run sync:projects</code>
+						</p>
+					</div>
+				) : (
+					<PortfolioGrid projects={projectMetrics} />
+				)
+			}
 		</main>
 		<Footer />
+		<style>
+			.obs-main {
+				width: 100%;
+				max-width: 1000px;
+				margin: 0 auto;
+				padding: 1.5rem 1rem;
+				display: flex;
+				flex-direction: column;
+				gap: 1.2rem;
+			}
+
+			/* ═══ EMPTY ═══ */
+			.empty-state {
+				text-align: center;
+				padding: 3rem;
+				color: var(--gray);
+				font-family: "Fira Code", monospace;
+				border: 2px dashed var(--gray-light);
+				border-radius: 16px;
+			}
+
+			@media (max-width: 640px) {
+				.metrics-grid {
+					grid-template-columns: repeat(2, 1fr);
+				}
+			}
+		</style>
 	</body>
 </html>

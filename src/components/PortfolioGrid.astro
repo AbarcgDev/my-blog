@@ -1,0 +1,24 @@
+---
+import PortfolioCard from "./PortfolioCard.astro";
+
+const { projects } = Astro.props;
+---
+
+<div class="project-grid">
+    {projects.map((p: any) => <PortfolioCard project={p} />)}
+</div>
+
+<style>
+    /* ═══ GRID ═══ */
+    .project-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+        gap: 1.25rem;
+    }
+
+    @media (max-width: 800px) {
+        .project-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

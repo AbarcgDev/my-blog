@@ -1,0 +1,33 @@
+---
+title: "Building a RAG Pipeline with LangChain"
+description: "Diseño de un pipeline de Retrieval-Augmented Generation usando embeddings, vector stores y LLMs para responder preguntas sobre documentación interna."
+pubDate: "2026-01-15"
+tags: ["langchain", "llm", "python", "rag"]
+complexity: 0.8
+readingTime: 12
+---
+
+## Arquitectura
+
+El pipeline consta de tres etapas principales: ingestión de documentos, vectorización con embeddings, y generación de respuestas con un LLM.
+
+### Ingestión
+
+Usamos `DirectoryLoader` para cargar PDFs y Markdown, luego `RecursiveCharacterTextSplitter` para dividir en chunks.
+
+```python
+from langchain.document_loaders import DirectoryLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+loader = DirectoryLoader("./docs", glob="**/*.md")
+splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+docs = splitter.split_documents(loader.load())
+```
+
+### Vector Store
+
+ChromaDB como vector store local con embeddings de OpenAI.
+
+### Generación
+
+Chain de QA con contexto recuperado y GPT-4 como modelo generador.

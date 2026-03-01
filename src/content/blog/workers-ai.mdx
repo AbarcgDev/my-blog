@@ -1,0 +1,34 @@
+---
+title: "Desplegando Modelos con Cloudflare Workers AI"
+description: "Cómo servir inferencia de modelos ML en el edge usando Workers AI, con latencia sub-50ms global."
+pubDate: "2026-02-20"
+tags: ["cloudflare", "ml", "edge", "typescript"]
+complexity: 0.5
+readingTime: 7
+---
+
+## Edge AI
+
+Workers AI permite ejecutar modelos directamente en los data centers de Cloudflare, eliminando la necesidad de un servidor GPU dedicado.
+
+### Implementación
+
+```typescript
+export default {
+  async fetch(request: Request, env: Env) {
+    const { prompt } = await request.json();
+    
+    const response = await env.AI.run("@cf/meta/llama-2-7b-chat-int8", {
+      messages: [{ role: "user", content: prompt }],
+    });
+    
+    return Response.json(response);
+  },
+};
+```
+
+## Benchmarks
+
+- p50 latency: 35ms
+- p99 latency: 120ms
+- Costo: ~$0.01 por 1000 requests

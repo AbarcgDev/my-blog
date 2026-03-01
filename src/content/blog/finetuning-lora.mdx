@@ -1,0 +1,33 @@
+---
+title: "Fine-tuning de LLMs con LoRA"
+description: "Guía práctica para hacer fine-tuning de modelos de lenguaje usando Low-Rank Adaptation, reduciendo costos de entrenamiento un 90%."
+pubDate: "2025-12-20"
+tags: ["pytorch", "llm", "ml", "lora"]
+complexity: 0.9
+readingTime: 15
+---
+
+## ¿Por qué LoRA?
+
+Fine-tuning completo de un LLM de 7B parámetros requiere múltiples GPUs A100. Con LoRA, basta una sola GPU con 16GB VRAM.
+
+### Concepto
+
+LoRA descompone las matrices de pesos en productos de matrices de bajo rango, entrenando solo los deltas.
+
+```python
+from peft import LoraConfig, get_peft_model
+
+config = LoraConfig(
+    r=16,
+    lora_alpha=32,
+    target_modules=["q_proj", "v_proj"],
+    lora_dropout=0.05,
+)
+model = get_peft_model(base_model, config)
+```
+
+## Resultados
+
+- 92% menos parámetros entrenables
+- Performance comparable al fine-tuning completo en benchmarks de NER y QA

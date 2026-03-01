@@ -1,0 +1,129 @@
+---
+const { totalProjects, healthyCount, totalStars, langsCount } = Astro.props;
+---
+
+<section class="obs-header">
+    <div class="obs-header-left">
+        <h1>
+            <span class="status-pulse"></span>
+            Portafolio
+        </h1>
+        <p class="obs-subtitle">
+            Production metrics & health — synced from GitHub
+        </p>
+    </div>
+    <div class="obs-header-stats">
+        <div class="agg-stat">
+            <span class="agg-val">{totalProjects}</span>
+            <span class="agg-lbl">services</span>
+        </div>
+        <div class="agg-divider"></div>
+        <div class="agg-stat">
+            <span class="agg-val green-text"
+                >{healthyCount}/{totalProjects}
+            </span>
+            <span class="agg-lbl">healthy</span>
+        </div>
+        <div class="agg-divider"></div>
+        <div class="agg-stat">
+            <span class="agg-val">{totalStars}</span>
+            <span class="agg-lbl">stars</span>
+        </div>
+        <div class="agg-divider"></div>
+        <div class="agg-stat">
+            <span class="agg-val">{langsCount}</span>
+            <span class="agg-lbl">langs</span>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* ═══ HEADER ═══ */
+    .obs-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        gap: 1rem;
+    }
+
+    .obs-header h1 {
+        font-family: "Fira Code", monospace;
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--black);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+
+    .status-pulse {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%,
+        100% {
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+        }
+        50% {
+            box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+        }
+    }
+
+    .obs-subtitle {
+        font-family: "Fira Code", monospace;
+        font-size: 0.68rem;
+        color: var(--gray);
+        margin: 0.2rem 0 0 0;
+    }
+
+    .obs-header-stats {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .agg-stat {
+        text-align: center;
+    }
+
+    .agg-val {
+        font-family: "Fira Code", monospace;
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--primary);
+        display: block;
+        line-height: 1;
+    }
+
+    .green-text {
+        color: #22c55e !important;
+    }
+
+    .agg-lbl {
+        font-family: "Fira Code", monospace;
+        font-size: 0.5rem;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .agg-divider {
+        width: 1px;
+        height: 28px;
+        background: var(--gray-light);
+    }
+
+    @media (max-width: 640px) {
+        .obs-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>

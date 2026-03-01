@@ -1,0 +1,382 @@
+---
+import { Icon } from "astro-icon/components";
+import { getTechIcon } from "../utils/techIcons";
+
+const { postsData } = Astro.props;
+---
+
+<section class="panel">
+    <div class="panel-header">
+        <span class="panel-dot"></span>
+        <span class="panel-title">Data Table</span>
+        <div class="table-controls">
+            <input
+                type="text"
+                id="search-input"
+                placeholder="Buscar..."
+                class="search-input"
+            />
+        </div>
+    </div>
+    <div class="table-wrapper">
+        <table id="posts-table">
+            <thead>
+                <tr>
+                    <th class="sortable" data-sort="title"
+                        >Título <span class="sort-icon">↕</span>
+                    </th>
+                    <th class="sortable" data-sort="date"
+                        >Fecha <span class="sort-icon">↕</span>
+                    </th>
+                    <th>Stack</th>
+                    <th class="sortable" data-sort="reading"
+                        >Lectura <span class="sort-icon">↕</span>
+                    </th>
+                    <th class="sortable" data-sort="complexity"
+                        >Complejidad <span class="sort-icon">↕</span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    postsData.map((post: any) => (
+                        <tr
+                            class="post-row"
+                            data-slug={post.slug}
+                            data-title={post.title.toLowerCase()}
+                            data-date={post.pubDate}
+                            data-reading={post.readingTime}
+                            data-complexity={post.complexity}
+                            data-description={post.description}
+                            data-tags={JSON.stringify(post.tags)}
+                        >
+                            <td
+                                style="display:none"
+                                class="hidden-preview-tags"
+                            >
+                                {post.tags.map((tag: string) => (
+                                    <span class="ptag" title={tag}>
+                                        <Icon name={getTechIcon(tag)} />
+                                    </span>
+                                ))}
+                            </td>
+                            <td class="cell-title">
+                                <a href={`/blog/${post.slug}/`}>{post.title}</a>
+                            </td>
+                            <td class="cell-date">
+                                {new Date(post.pubDate).toLocaleDateString(
+                                    "es-MX",
+                                    {
+                                        month: "short",
+                                        day: "numeric",
+                                        year: "2-digit",
+                                    }
+                                )}
+                            </td>
+                            <td class="cell-stack">
+                                {post.tags.map((tag: string) => (
+                                    <span class="tag-icon" title={tag}>
+                                        <Icon name={getTechIcon(tag)} />
+                                    </span>
+                                ))}
+                            </td>
+                            <td class="cell-reading">
+                                <span class="reading-badge">
+                                    {post.readingTime} min
+                                </span>
+                            </td>
+                            <td class="cell-complexity">
+                                <div class="complexity-bar-track">
+                                    <div
+                                        class="complexity-bar-fill"
+                                        style={`width: ${
+                                            post.complexity * 100
+                                        }%`}
+                                    />
+                                </div>
+                                <span class="complexity-val">
+                                    {post.complexity.toFixed(1)}
+                                </span>
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<style>
+    /* ═══════════ TABLE ═══════════ */
+    .panel {
+        background: var(--surface);
+        border: 1px solid var(--gray-light);
+        border-radius: 14px;
+        padding: 1rem 1.2rem;
+        box-shadow: var(--box-shadow);
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .panel-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--primary);
+    }
+
+    .panel-title {
+        font-family: "Fira Code", monospace;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--black);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .table-controls {
+        margin-left: auto;
+    }
+
+    .search-input {
+        font-family: "Fira Code", monospace;
+        font-size: 0.7rem;
+        padding: 0.35rem 0.7rem;
+        border-radius: 8px;
+        border: 1px solid var(--gray-light);
+        background: var(--background);
+        color: var(--black);
+        outline: none;
+        width: 180px;
+        transition: border-color 0.2s ease;
+    }
+
+    .search-input:focus {
+        border-color: var(--primary);
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "Fira Code", monospace;
+        font-size: 0.75rem;
+    }
+
+    thead th {
+        text-transform: uppercase;
+        font-size: 0.6rem;
+        font-weight: 700;
+        color: var(--gray);
+        letter-spacing: 0.05em;
+        padding: 0.5rem 0.6rem;
+        border-bottom: 1px solid var(--gray-light);
+        text-align: left;
+        white-space: nowrap;
+        user-select: none;
+    }
+
+    th.sortable {
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    th.sortable:hover {
+        color: var(--primary);
+    }
+
+    th.sortable.active {
+        color: var(--primary);
+    }
+
+    .sort-icon {
+        font-size: 0.6rem;
+        opacity: 0.4;
+    }
+
+    th.sortable.active .sort-icon {
+        opacity: 1;
+    }
+
+    tbody tr {
+        transition: background 0.15s ease;
+        cursor: pointer;
+    }
+
+    tbody tr:hover {
+        background: color-mix(in srgb, var(--primary) 5%, transparent);
+    }
+
+    td {
+        padding: 0.6rem 0.6rem;
+        border-bottom: 1px solid
+            color-mix(in srgb, var(--gray-light) 60%, transparent);
+        vertical-align: middle;
+    }
+
+    .cell-title a {
+        color: var(--black);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.78rem;
+        transition: color 0.2s ease;
+    }
+
+    .cell-title a:hover {
+        color: var(--primary);
+    }
+
+    .cell-date {
+        color: var(--gray);
+        white-space: nowrap;
+        font-size: 0.68rem;
+    }
+
+    .cell-stack {
+        display: flex;
+        gap: 3px;
+        flex-wrap: nowrap;
+    }
+
+    .tag-icon {
+        font-size: 0.85rem;
+        cursor: default;
+        transition: transform 0.2s ease;
+    }
+
+    .tag-icon:hover {
+        transform: scale(1.3);
+    }
+
+    .reading-badge {
+        font-family: "Fira Code", monospace;
+        font-size: 0.62rem;
+        padding: 0.15rem 0.45rem;
+        border-radius: 4px;
+        background: color-mix(in srgb, var(--primary) 10%, transparent);
+        color: var(--primary);
+        white-space: nowrap;
+    }
+
+    .cell-complexity {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+    }
+
+    .complexity-bar-track {
+        width: 60px;
+        height: 5px;
+        border-radius: 3px;
+        background: color-mix(in srgb, var(--gray-light) 80%, transparent);
+        overflow: hidden;
+    }
+
+    .complexity-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        background: var(--accent);
+        transition: width 0.4s ease;
+    }
+
+    .complexity-val {
+        font-size: 0.6rem;
+        color: var(--gray);
+        min-width: 1.5em;
+    }
+
+    @media (max-width: 640px) {
+        .search-input {
+            width: 120px;
+        }
+    }
+</style>
+
+<script>
+    // ═══ SORTING ═══
+    (() => {
+        const table = document.getElementById("posts-table");
+        if (!table) return;
+
+        const headers = table.querySelectorAll("th.sortable");
+        let currentSort = "";
+        let ascending = true;
+
+        headers.forEach((th) => {
+            th.addEventListener("click", () => {
+                const sortKey = th.getAttribute("data-sort") || "";
+                if (currentSort === sortKey) {
+                    ascending = !ascending;
+                } else {
+                    currentSort = sortKey;
+                    ascending = true;
+                }
+
+                const tbody = table.querySelector("tbody");
+                if (!tbody) return;
+                const rows = Array.from(tbody.querySelectorAll("tr"));
+
+                rows.sort((a, b) => {
+                    let va: string | number, vb: string | number;
+                    switch (sortKey) {
+                        case "title":
+                            va = a.getAttribute("data-title") || "";
+                            vb = b.getAttribute("data-title") || "";
+                            break;
+                        case "date":
+                            va = a.getAttribute("data-date") || "";
+                            vb = b.getAttribute("data-date") || "";
+                            break;
+                        case "reading":
+                            va = parseFloat(
+                                a.getAttribute("data-reading") || "0"
+                            );
+                            vb = parseFloat(
+                                b.getAttribute("data-reading") || "0"
+                            );
+                            return ascending
+                                ? (va as number) - (vb as number)
+                                : (vb as number) - (va as number);
+                        case "complexity":
+                            va = parseFloat(
+                                a.getAttribute("data-complexity") || "0"
+                            );
+                            vb = parseFloat(
+                                b.getAttribute("data-complexity") || "0"
+                            );
+                            return ascending
+                                ? (va as number) - (vb as number)
+                                : (vb as number) - (va as number);
+                    }
+                    if (va! < vb!) return ascending ? -1 : 1;
+                    if (va! > vb!) return ascending ? 1 : -1;
+                    return 0;
+                });
+
+                rows.forEach((row) => tbody?.appendChild(row));
+            });
+        });
+
+        // ═══ SEARCH ═══
+        const searchInput = document.getElementById("search-input");
+        if (!searchInput) return;
+        searchInput.addEventListener("input", (e) => {
+            const query = (e.target as HTMLInputElement).value.toLowerCase();
+            const rows = table.querySelectorAll("tbody tr");
+            rows.forEach((row) => {
+                const title = row.getAttribute("data-title");
+                const tags = row.getAttribute("data-tags");
+                const match = title!.includes(query) || tags!.includes(query);
+                (row as HTMLElement).style.display = match ? "" : "none";
+            });
+        });
+    })();
+</script>

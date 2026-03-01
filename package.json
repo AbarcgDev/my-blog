@@ -8,20 +8,25 @@
 		"preview": "astro build && wrangler dev",
 		"astro": "astro",
 		"deploy": "astro build && wrangler deploy",
-		"cf-typegen": "wrangler types"
+		"cf-typegen": "wrangler types",
+		"sync:projects": "node scripts/sync-projects.mjs"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^12.6.12",
 		"@astrojs/mdx": "^4.3.13",
 		"@astrojs/rss": "^4.0.15",
 		"@astrojs/sitemap": "^3.7.0",
+		"@astrojs/tailwind": "^6.0.2",
 		"@fontsource/fira-code": "^5.2.7",
 		"@fontsource/fira-sans": "^5.2.7",
 		"astro": "^5.17.1",
+		"astro-icon": "^1.1.5",
 		"reading-time": "^1.5.0",
 		"sharp": "^0.34.3"
 	},
 	"devDependencies": {
+		"@iconify-json/devicon": "^1.2.59",
+		"@iconify-json/mdi": "^1.2.3",
 		"@types/node": "^25.3.2",
 		"wrangler": "^4.69.0"
 	}

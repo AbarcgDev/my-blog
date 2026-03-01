@@ -1,0 +1,326 @@
+---
+// src/components/TerminalHero.astro
+const {
+  command = "npx astro dev",
+  user = "abarg",
+  machine = "edge-node",
+} = Astro.props;
+
+const outputLines = [
+  { text: "Initializing AI Engineering Environment...", type: "status" },
+  { text: "[OK] Loading Neural Engine...", type: "ok" },
+  { text: "[OK] Connected to Cloudflare Edge.", type: "ok" },
+  { text: "[OK] Portfolio v1.0.0 ready.", type: "ok" },
+  { text: "", type: "blank" },
+  { text: "Welcome. Systems nominal.", type: "accent" },
+];
+---
+
+<div class="terminal-wrapper">
+  <!-- Glow effect behind the terminal -->
+  <div class="terminal-glow"></div>
+
+  <div class="terminal">
+    <!-- Title bar -->
+    <div class="terminal-titlebar">
+      <div class="terminal-buttons">
+        <span class="btn-close"></span>
+        <span class="btn-minimize"></span>
+        <span class="btn-maximize"></span>
+      </div>
+      <div class="terminal-title">{user}@{machine}: ~</div>
+      <div class="terminal-titlebar-spacer"></div>
+    </div>
+
+    <!-- Terminal body -->
+    <div class="terminal-body">
+      <!-- Input line -->
+      <div class="terminal-line terminal-input">
+        <span class="prompt-user">{user}@{machine}</span>
+        <span class="prompt-separator">:</span>
+        <span class="prompt-path">~</span>
+        <span class="prompt-symbol">$</span>
+        <span class="prompt-command">{command}</span>
+      </div>
+
+      <!-- Output lines with staggered reveal -->
+      {
+        outputLines.map((line, i) => (
+          <div class={`terminal-line terminal-output line-${i}`}>
+            {line.type === "ok" && (
+              <span>
+                <span class="output-ok">[OK]</span>
+                <span class="output-text">
+                  {line.text.replace("[OK] ", "")}
+                </span>
+              </span>
+            )}
+            {line.type === "status" && (
+              <span class="output-status">{line.text}</span>
+            )}
+            {line.type === "accent" && (
+              <span class="output-accent">{line.text}</span>
+            )}
+            {line.type === "blank" && <span>&nbsp;</span>}
+          </div>
+        ))
+      }
+
+      <!-- Blinking cursor line -->
+      <div class="terminal-line terminal-cursor-line line-6">
+        <span class="prompt-user">{user}@{machine}</span>
+        <span class="prompt-separator">:</span>
+        <span class="prompt-path">~</span>
+        <span class="prompt-symbol">$</span>
+        <span class="cursor"></span>
+      </div>
+    </div>
+
+    <!-- Scanline overlay for CRT effect -->
+    <div class="terminal-scanlines"></div>
+  </div>
+</div>
+
+<style>
+  /* ========== WRAPPER ========== */
+  .terminal-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    margin: 2rem auto 0;
+    padding: 0 1rem;
+  }
+
+  /* ========== GLOW ========== */
+  .terminal-glow {
+    position: absolute;
+    inset: -20px;
+    background: radial-gradient(
+      ellipse at center,
+      color-mix(in srgb, var(--primary) 15%, transparent),
+      transparent 70%
+    );
+    border-radius: 24px;
+    z-index: 0;
+    pointer-events: none;
+    filter: blur(30px);
+  }
+
+  /* ========== TERMINAL FRAME ========== */
+  .terminal {
+    position: relative;
+    z-index: 1;
+    background: var(--gray-dark);
+    border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+      0 0 0 1px color-mix(in srgb, var(--primary) 10%, transparent),
+      inset 0 1px 0 color-mix(in srgb, var(--primary) 8%, transparent);
+    font-family: "Fira Code", "Cascadia Code", "JetBrains Mono", monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+  }
+
+  /* ========== TITLE BAR ========== */
+  .terminal-titlebar {
+    display: flex;
+    align-items: center;
+    background: color-mix(in srgb, var(--gray-dark) 90%, black);
+    border-bottom: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
+    padding: 0.55rem 1rem;
+    user-select: none;
+  }
+
+  .terminal-buttons {
+    display: flex;
+    gap: 7px;
+  }
+
+  .terminal-buttons span {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: block;
+  }
+
+  .btn-close {
+    background: #ff5f57;
+  }
+  .btn-minimize {
+    background: #febc2e;
+  }
+  .btn-maximize {
+    background: #28c840;
+  }
+
+  .terminal-title {
+    flex: 1;
+    text-align: center;
+    color: color-mix(in srgb, var(--primary) 50%, var(--gray));
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+  }
+
+  .terminal-titlebar-spacer {
+    width: 54px; /* balance the 3 buttons */
+  }
+
+  /* ========== BODY ========== */
+  .terminal-body {
+    padding: 1.2rem 1.4rem;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--gray-dark) 100%, black) 0%,
+      color-mix(in srgb, var(--gray-dark) 92%, black) 100%
+    );
+    min-height: 160px;
+  }
+
+  /* ========== LINES ========== */
+  .terminal-line {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* Staggered line reveal animation */
+  .terminal-output,
+  .terminal-cursor-line {
+    opacity: 0;
+    transform: translateY(4px);
+    animation: line-reveal 0.3s ease forwards;
+  }
+  .line-0 {
+    animation-delay: 0.6s;
+  }
+  .line-1 {
+    animation-delay: 1s;
+  }
+  .line-2 {
+    animation-delay: 1.4s;
+  }
+  .line-3 {
+    animation-delay: 1.8s;
+  }
+  .line-4 {
+    animation-delay: 2.2s;
+  }
+  .line-5 {
+    animation-delay: 2.6s;
+  }
+  .line-6 {
+    animation-delay: 3s;
+  }
+
+  @keyframes line-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ========== PROMPT STYLING ========== */
+  .prompt-user {
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  .prompt-separator {
+    color: var(--gray);
+  }
+
+  .prompt-path {
+    color: var(--accent-light, var(--accent));
+    font-weight: 700;
+  }
+
+  .prompt-symbol {
+    color: var(--gray);
+    margin: 0 0.4em;
+  }
+
+  .prompt-command {
+    color: var(--background);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .prompt-command {
+      color: #d4edee;
+    }
+  }
+
+  /* ========== OUTPUT STYLING ========== */
+  .output-ok {
+    color: #28c840;
+    font-weight: 700;
+    margin-right: 0.5em;
+  }
+
+  .output-text {
+    color: color-mix(in srgb, var(--background) 70%, var(--primary));
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .output-text {
+      color: color-mix(in srgb, #c5e4e5 80%, var(--primary));
+    }
+  }
+
+  .output-status {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .output-accent {
+    color: var(--primary);
+    font-weight: 700;
+    text-shadow: 0 0 8px color-mix(in srgb, var(--primary) 40%, transparent);
+  }
+
+  /* ========== BLINKING CURSOR ========== */
+  .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 1.15em;
+    background: var(--primary);
+    vertical-align: text-bottom;
+    animation: cursor-blink 1s step-end infinite;
+    box-shadow: 0 0 6px color-mix(in srgb, var(--primary) 60%, transparent);
+  }
+
+  @keyframes cursor-blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+
+  /* ========== SCANLINE OVERLAY ========== */
+  .terminal-scanlines {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.04) 2px,
+      rgba(0, 0, 0, 0.04) 4px
+    );
+    z-index: 2;
+    border-radius: 10px;
+  }
+
+  /* ========== RESPONSIVE ========== */
+  @media (max-width: 600px) {
+    .terminal {
+      font-size: 0.72rem;
+    }
+    .terminal-body {
+      padding: 0.8rem 1rem;
+    }
+  }
+</style>
