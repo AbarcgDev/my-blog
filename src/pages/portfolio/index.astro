@@ -218,14 +218,12 @@ const projectsData = projects.map((p) => ({
 				height: 100%;
 				overflow-y: auto; /* Independent scroll */
 				padding-right: 0.5rem;
+				scrollbar-width: none; /* Firefox */
+				-ms-overflow-style: none; /* IE/Edge */
 			}
 
 			.obs-sidebar::-webkit-scrollbar {
-				width: 6px;
-			}
-			.obs-sidebar::-webkit-scrollbar-thumb {
-				background-color: var(--gray-light);
-				border-radius: 10px;
+				display: none; /* Chrome/Safari */
 			}
 
 			.obs-content {
