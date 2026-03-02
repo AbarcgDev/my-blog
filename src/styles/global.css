@@ -316,7 +316,7 @@ hr {
 }
 
 /* ═══════════ COLLAPSIBLE RIGHT ToC SIDEBAR ═══════════ */
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
 	.toc-sidebar {
 		position: fixed;
 		top: 0;
