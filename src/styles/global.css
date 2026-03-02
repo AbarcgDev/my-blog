@@ -278,7 +278,7 @@ hr {
 }
 
 /* ═══════════ COLLAPSIBLE LEFT SIDEBAR (mobile) ═══════════ */
-@media (max-width: 900px) {
+@media (max-width: 1400px) {
 
 	.blog-sidebar,
 	.obs-sidebar,
@@ -316,7 +316,7 @@ hr {
 }
 
 /* ═══════════ COLLAPSIBLE RIGHT ToC SIDEBAR ═══════════ */
-@media (max-width: 900px) {
+@media (max-width: 1400px) {
 	.toc-sidebar {
 		position: fixed;
 		top: 0;
