@@ -1,14 +1,9 @@
 ---
-// SidebarToggle.astro
-// A floating button that toggles sidebar visibility on mobile.
-// Works with any sidebar using the class `.collapsible-sidebar`.
+// TocToggle.astro
+// A floating button on the right side that toggles the Table of Contents sidebar.
 ---
 
-<button
-    class="sidebar-toggle"
-    id="sidebar-toggle"
-    aria-label="Mostrar/ocultar barra lateral"
->
+<button class="toc-toggle" id="toc-toggle" aria-label="Mostrar/ocultar índice">
     <svg
         class="icon-open"
         viewBox="0 0 24 24"
@@ -20,10 +15,10 @@
         stroke-linecap="round"
         stroke-linejoin="round"
     >
-        <rect x="3" y="3" width="7" height="18" rx="1"></rect>
-        <line x1="14" y1="6" x2="21" y2="6"></line>
-        <line x1="14" y1="12" x2="21" y2="12"></line>
-        <line x1="14" y1="18" x2="21" y2="18"></line>
+        <line x1="3" y1="6" x2="15" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="18" y2="18"></line>
+        <polyline points="15 3 18 6 15 9"></polyline>
     </svg>
     <svg
         class="icon-close"
@@ -42,11 +37,11 @@
 </button>
 
 <style>
-    .sidebar-toggle {
-        display: none; /* Hidden on desktop */
+    .toc-toggle {
+        display: none;
         position: fixed;
         bottom: 1.5rem;
-        left: 1.5rem;
+        right: 1.5rem;
         z-index: 1000;
         width: 48px;
         height: 48px;
@@ -61,24 +56,24 @@
         transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .sidebar-toggle:hover {
+    .toc-toggle:hover {
         transform: scale(1.08);
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
     }
 
-    .sidebar-toggle .icon-close {
+    .toc-toggle .icon-close {
         display: none;
     }
 
-    :global(.sidebar-open) .sidebar-toggle .icon-open {
+    :global(.toc-open) .toc-toggle .icon-open {
         display: none;
     }
-    :global(.sidebar-open) .sidebar-toggle .icon-close {
+    :global(.toc-open) .toc-toggle .icon-close {
         display: block;
     }
 
-    @media (max-width: 900px) {
-        .sidebar-toggle {
+    @media (max-width: 1100px) {
+        .toc-toggle {
             display: flex;
         }
     }
@@ -86,12 +81,13 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        const btn = document.getElementById("sidebar-toggle");
+        const btn = document.getElementById("toc-toggle");
         if (!btn) return;
 
         btn.addEventListener("click", () => {
-            document.body.classList.toggle("sidebar-open");
-            document.body.classList.remove("toc-open");
+            document.body.classList.toggle("toc-open");
+            // Close left sidebar if open
+            document.body.classList.remove("sidebar-open");
         });
     });
 </script>

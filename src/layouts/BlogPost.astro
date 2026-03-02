@@ -7,6 +7,7 @@ import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
 import SidebarToggle from "../components/SidebarToggle.astro";
+import TocToggle from "../components/TocToggle.astro";
 import { getTechIcon } from "../utils/techIcons";
 
 type Props = CollectionEntry<"blog">["data"] & {
@@ -32,6 +33,7 @@ const {
 	<body class="grid-app-body">
 		<Header />
 		<SidebarToggle />
+		<TocToggle />
 		<main class="grid-app-main blog-post-main">
 			<div class="post-layout">
 				<!-- ═══ SIDEBAR ═══ -->
@@ -91,21 +93,6 @@ const {
 							)
 						}
 					</div>
-
-					{
-						headings.length > 0 && (
-							<div class="sidebar-block toc-block">
-								<h3 class="toc-title">Índice</h3>
-								<ul class="toc-list">
-									{headings.map((h: any) => (
-										<li class={`toc-depth-${h.depth}`}>
-											<a href={`#${h.slug}`}>{h.text}</a>
-										</li>
-									))}
-								</ul>
-							</div>
-						)
-					}
 				</aside>
 
 				<!-- ═══ CONTENT ═══ -->
@@ -148,6 +135,24 @@ const {
 						</div>
 					</article>
 				</div>
+
+				<!-- ═══ TOC SIDEBAR (RIGHT) ═══ -->
+				{
+					headings.length > 0 && (
+						<aside class="toc-sidebar">
+							<div class="sidebar-block toc-block">
+								<h3 class="toc-title">Índice</h3>
+								<ul class="toc-list">
+									{headings.map((h: any) => (
+										<li class={`toc-depth-${h.depth}`}>
+											<a href={`#${h.slug}`}>{h.text}</a>
+										</li>
+									))}
+								</ul>
+							</div>
+						</aside>
+					)
+				}
 			</div>
 		</main>
 		<style>
@@ -178,12 +183,26 @@ const {
 			/* ═══ TWO-COLUMN POST LAYOUT ═══ */
 			.post-layout {
 				display: grid;
-				grid-template-columns: 320px 1fr;
+				grid-template-columns: 320px 1fr 280px;
 				gap: 1.5rem;
 				flex: 1;
 				overflow: hidden;
 				padding-bottom: 2rem;
 				width: 100%;
+			}
+
+			.toc-sidebar {
+				display: flex;
+				flex-direction: column;
+				gap: 1.5rem;
+				height: 100%;
+				overflow-y: auto;
+				scrollbar-width: none;
+				-ms-overflow-style: none;
+				padding-top: 0.5rem;
+			}
+			.toc-sidebar::-webkit-scrollbar {
+				display: none;
 			}
 
 			.post-sidebar {
