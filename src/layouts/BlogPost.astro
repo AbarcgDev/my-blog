@@ -1,10 +1,12 @@
 ---
 import { Image } from "astro:assets";
 import type { CollectionEntry } from "astro:content";
+import { Icon } from "astro-icon/components";
 import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
+import { getTechIcon } from "../utils/techIcons";
 
 type Props = CollectionEntry<"blog">["data"] & {
 	headings?: { depth: number; slug: string; text: string }[];
@@ -36,8 +38,8 @@ const {
 
 					<div class="sidebar-block author-block">
 						<div class="author-info">
-							<strong>Alvaro Abarca Godoy</strong>
-							<span>Data Engineer / Developer</span>
+							<strong>Alvaro Abarca</strong>
+							<span>Data & AI Enthusiast</span>
 						</div>
 					</div>
 
@@ -79,7 +81,9 @@ const {
 							tags && tags.length > 0 && (
 								<div class="meta-tags">
 									{tags.map((tag: string) => (
-										<span class="meta-tag">{tag}</span>
+										<span class="tech-tag" title={tag}>
+											<Icon name={getTechIcon(tag)} />
+										</span>
 									))}
 								</div>
 							)
@@ -301,16 +305,18 @@ const {
 				gap: 0.4rem;
 				margin-top: 1rem;
 			}
-			.meta-tag {
-				font-family: "Fira Code", monospace;
-				font-size: 0.6rem;
-				padding: 0.2rem 0.5rem;
-				border-radius: 4px;
-				background: color-mix(in srgb, var(--primary) 10%, transparent);
-				color: var(--primary);
-				border: 1px solid
-					color-mix(in srgb, var(--primary) 18%, transparent);
-				text-transform: uppercase;
+			.tech-tag {
+				font-size: 0;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				transition: transform 0.2s ease;
+			}
+			.tech-tag:hover {
+				transform: translateY(-2px);
+			}
+			.tech-tag [data-icon] {
+				font-size: 1.5rem;
 			}
 
 			.toc-title {
