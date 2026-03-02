@@ -41,6 +41,27 @@ const {
 						</div>
 					</div>
 
+					<div class="sidebar-block bmac-block">
+						<a
+							href="https://buymeacoffee.com/"
+							target="_blank"
+							rel="noopener noreferrer"
+							class="bmac-button"
+						>
+							<svg
+								viewBox="0 0 16 16"
+								width="16"
+								height="16"
+								aria-hidden="true"
+								><path
+									fill="currentColor"
+									d="M3 2v4.5A4.5 4.5 0 0 0 7.5 11h2.52a4.48 4.48 0 0 0 4.17-2.92A2.5 2.5 0 0 0 13 4.5h-1a1 1 0 0 0-1-1V2H3zm8 7.5H7.5A3.5 3.5 0 0 1 4 6.5V3h6v6.5zM12 4.5a1.5 1.5 0 0 1 1.5 1.5c0 .64-.4 1.2-1 1.42V4.5h-.5zM2 13v1h11v-1H2z"
+								></path>
+							</svg>
+							Buy me a coffee
+						</a>
+					</div>
+
 					<div class="sidebar-block meta-block">
 						<div class="meta-item">
 							<span class="meta-label">Publicado</span>
@@ -156,9 +177,7 @@ const {
 				flex: 1;
 				overflow: hidden;
 				padding-bottom: 2rem;
-				max-width: 1400px;
 				width: 100%;
-				margin: 0 auto;
 			}
 
 			.post-sidebar {
@@ -232,6 +251,33 @@ const {
 				font-size: 0.75rem;
 				color: var(--gray);
 				margin-top: 0.2rem;
+			}
+
+			.bmac-block {
+				padding: 0;
+				border: none;
+				background: none;
+				box-shadow: none;
+			}
+			.bmac-button {
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				gap: 0.6rem;
+				width: 100%;
+				padding: 0.8rem 1rem;
+				border-radius: 14px;
+				background: #ffdd00;
+				color: #000000;
+				font-family: "Fira Code", monospace;
+				font-size: 0.85rem;
+				font-weight: 800;
+				text-decoration: none;
+				transition: transform 0.2s ease, box-shadow 0.2s ease;
+			}
+			.bmac-button:hover {
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(255, 221, 0, 0.4);
 			}
 
 			.meta-item {
