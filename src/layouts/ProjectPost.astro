@@ -230,16 +230,11 @@ const {
             }
 
             .post-content-wrapper {
+                display: flex;
+                flex-direction: column;
                 flex: 1;
-                overflow-y: auto;
+                overflow: hidden;
                 padding-right: 0.5rem;
-            }
-            .post-content-wrapper::-webkit-scrollbar {
-                width: 6px;
-            }
-            .post-content-wrapper::-webkit-scrollbar-thumb {
-                background-color: var(--primary);
-                border-radius: 10px;
             }
 
             .app-footer-wrapper {
@@ -425,6 +420,10 @@ const {
                 border-radius: 16px;
                 overflow: hidden;
                 box-shadow: var(--box-shadow);
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                min-height: 0;
             }
 
             .article-header {
@@ -459,6 +458,16 @@ const {
                 font-size: 1rem;
                 line-height: 1.75;
                 color: var(--black);
+                flex: 1;
+                overflow-y: auto;
+                min-height: 0;
+            }
+            .prose::-webkit-scrollbar {
+                width: 6px;
+            }
+            .prose::-webkit-scrollbar-thumb {
+                background-color: var(--primary);
+                border-radius: 10px;
             }
 
             .prose :global(h1) {
