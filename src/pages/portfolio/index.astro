@@ -8,6 +8,7 @@ import PortfolioGrid from "../../components/PortfolioGrid.astro";
 import PortfolioHeader from "../../components/PortfolioHeader.astro";
 import PortfolioSidebarStats from "../../components/PortfolioSidebarStats.astro";
 import PortfolioStackGraph from "../../components/PortfolioStackGraph.astro";
+import SidebarToggle from "../../components/SidebarToggle.astro";
 
 const projects = (await getCollection("projects")).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -83,6 +84,7 @@ const projectsData = projects.map((p) => ({
 	</head>
 	<body class="grid-app-body">
 		<Header />
+		<SidebarToggle />
 		<main class="grid-app-main obs-main">
 			<PortfolioHeader
 				totalProjects={totalProjects}
@@ -374,7 +376,6 @@ const projectsData = projects.map((p) => ({
 				}
 				.grid-app-main,
 				.obs-layout,
-				.obs-sidebar,
 				.obs-content,
 				.obs-grid-wrapper {
 					overflow: visible;

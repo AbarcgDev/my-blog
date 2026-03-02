@@ -1,0 +1,354 @@
+---
+const { postsData } = Astro.props;
+---
+
+<section class="panel">
+    <div class="panel-header">
+        <span class="panel-dot"></span>
+        <span class="panel-title">Red de Etiquetas</span>
+    </div>
+    <div
+        id="tags-graph-container"
+        class="graph-container"
+        data-posts={postsData}
+    >
+        <!-- SVG injected by D3 -->
+    </div>
+</section>
+
+<style>
+    /* ═══════════ PANELS ═══════════ */
+    .panel {
+        background: var(--surface);
+        border: 1px solid var(--gray-light);
+        border-radius: 14px;
+        padding: 1rem 1.2rem;
+        box-shadow: var(--box-shadow);
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .panel-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--primary);
+    }
+
+    .panel-title {
+        font-family: "Fira Code", monospace;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--black);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .graph-container {
+        width: 100%;
+        height: 380px;
+        background: color-mix(in srgb, var(--surface) 50%, var(--background));
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--gray-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+    }
+
+    .graph-container:active {
+        cursor: grabbing;
+    }
+
+    /* Global D3 tooltip styles if we want them, but native title is fine for now */
+</style>
+
+<script>
+    import * as d3 from "d3";
+
+    const container = document.getElementById("tags-graph-container");
+
+    if (container) {
+        const postsText = container.getAttribute("data-posts");
+
+        if (postsText) {
+            const posts = JSON.parse(postsText);
+
+            // Extract Nodes and Links
+            const tagsSet = new Map();
+            const nodes: any[] = [];
+            const links: any[] = [];
+
+            posts.forEach((p: any) => {
+                // Post Node
+                nodes.push({ id: p.slug, type: "post", title: p.title });
+
+                (p.tags || []).forEach((t: string) => {
+                    const tagKey = t.toLowerCase();
+                    if (!tagsSet.has(tagKey))
+                        tagsSet.set(tagKey, { count: 0, original: t });
+                    tagsSet.get(tagKey).count += 1;
+
+                    links.push({ source: p.slug, target: tagKey });
+                });
+            });
+
+            tagsSet.forEach((data, tagKey) => {
+                nodes.push({
+                    id: tagKey,
+                    type: "tag",
+                    title: data.original,
+                    count: data.count,
+                });
+            });
+
+            // Dimensions
+            const width = container.clientWidth || 240;
+            const height = container.clientHeight || 260;
+
+            const svg = d3
+                .select(container)
+                .append("svg")
+                .attr("width", "100%")
+                .attr("height", "100%")
+                .attr("viewBox", `0 0 ${width} ${height}`);
+
+            // Add background rect to catch clicks for resetting zoom
+            svg.append("rect")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("fill", "transparent")
+                .on("click", resetZoom);
+
+            const g = svg.append("g");
+
+            // Setup Zoom
+            const zoom = d3
+                .zoom()
+                .scaleExtent([0.5, 4])
+                .on("zoom", (event) => {
+                    g.attr("transform", event.transform);
+                });
+
+            // Make the svg zoomable (via scroll/drag on background)
+            svg.call(zoom as any);
+
+            // Simulation forces
+            const simulation = d3
+                .forceSimulation(nodes)
+                .force(
+                    "link",
+                    d3
+                        .forceLink(links)
+                        .id((d: any) => d.id)
+                        .distance(45)
+                )
+                .force("charge", d3.forceManyBody().strength(-60))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force(
+                    "collide",
+                    d3
+                        .forceCollide()
+                        .radius((d: any) =>
+                            d.type === "tag" ? 12 + d.count * 2.5 : 6
+                        )
+                        .iterations(2)
+                );
+
+            // Edges
+            const link = g
+                .append("g")
+                .attr("stroke", "var(--gray-light)")
+                .attr("stroke-opacity", 0.6)
+                .selectAll("line")
+                .data(links)
+                .join("line")
+                .attr("stroke-width", 1.5);
+
+            // Nodes
+            const node = g
+                .append("g")
+                .attr("stroke", "var(--surface)")
+                .attr("stroke-width", 1.5)
+                .selectAll("circle")
+                .data(nodes)
+                .join("circle")
+                .attr("r", (d: any) =>
+                    d.type === "tag" ? 8 + d.count * 2.5 : 4
+                )
+                .attr("fill", (d: any) =>
+                    d.type === "tag" ? "var(--primary)" : "var(--gray)"
+                )
+                .attr("cursor", "pointer")
+                .on("click", (event: any, d: any) => {
+                    event.stopPropagation();
+                    if (d.type === "tag") {
+                        clickedNode(d);
+                    }
+                })
+                .call(
+                    d3
+                        .drag()
+                        .on("start", dragstarted)
+                        .on("drag", dragged)
+                        .on("end", dragended) as any
+                );
+
+            // Tooltips
+            node.append("title").text((d: any) =>
+                d.type === "tag" ? `${d.title} (${d.count} posts)` : d.title
+            );
+
+            // Labels for Tag Nodes (Always Visible)
+            const label = g
+                .append("g")
+                .selectAll("text")
+                .data(nodes.filter((d: any) => d.type === "tag"))
+                .join("text")
+                .attr("font-size", "0.6rem")
+                .attr("font-family", "'Fira Code', monospace")
+                .attr("font-weight", "600")
+                .attr("fill", "var(--black)")
+                .attr("text-anchor", "middle")
+                .attr("dy", (d: any) => -(10 + d.count * 2.5))
+                .attr("pointer-events", "none") // Do not block drag/click
+                .text((d: any) => d.title);
+
+            // Labels for Post Nodes (Hidden by Default)
+            const postLabel = g
+                .append("g")
+                .selectAll("text")
+                .data(nodes.filter((d: any) => d.type === "post"))
+                .join("text")
+                .attr("font-size", "0.45rem")
+                .attr("font-family", "'Fira Code', monospace")
+                .attr("fill", "var(--gray)")
+                .attr("text-anchor", "middle")
+                .attr("dy", -8)
+                .attr("opacity", 0) // Hidden normally
+                .attr("pointer-events", "none")
+                .text((d: any) => {
+                    // Truncate long post titles
+                    return d.title.length > 20
+                        ? d.title.substring(0, 18) + "..."
+                        : d.title;
+                });
+
+            // Animation tick
+            simulation.on("tick", () => {
+                link.attr("x1", (d: any) => d.source.x)
+                    .attr("y1", (d: any) => d.source.y)
+                    .attr("x2", (d: any) => d.target.x)
+                    .attr("y2", (d: any) => d.target.y);
+
+                // Rebound boundaries playfully
+                node.attr("cx", (d: any) => {
+                    const r = d.type === "tag" ? 8 + d.count * 2.5 : 4;
+                    return (d.x = Math.max(r, Math.min(width - r, d.x)));
+                }).attr("cy", (d: any) => {
+                    const r = d.type === "tag" ? 8 + d.count * 2.5 : 4;
+                    return (d.y = Math.max(r, Math.min(height - r, d.y)));
+                });
+
+                label.attr("x", (d: any) => d.x).attr("y", (d: any) => d.y);
+
+                postLabel.attr("x", (d: any) => d.x).attr("y", (d: any) => d.y);
+            });
+
+            // Interaction fns
+            function clickedNode(d: any) {
+                // Dim unrelated nodes and links
+                node.transition()
+                    .duration(500)
+                    .style("opacity", (n: any) => {
+                        if (n.id === d.id) return 1; // The clicked tag
+                        // Check if there is a link between clicked tag 'd' and node 'n'
+                        const isConnected = links.some(
+                            (l) =>
+                                (l.source.id === d.id &&
+                                    l.target.id === n.id) ||
+                                (l.target.id === d.id && l.source.id === n.id)
+                        );
+                        return isConnected ? 1 : 0.1;
+                    });
+
+                label
+                    .transition()
+                    .duration(500)
+                    .style("opacity", (n: any) => {
+                        return n.id === d.id ? 1 : 0.1;
+                    });
+
+                // Show post titles ONLY if they are connected to the clicked tag
+                postLabel
+                    .transition()
+                    .duration(500)
+                    .style("opacity", (n: any) => {
+                        const isConnected = links.some(
+                            (l) =>
+                                (l.source.id === d.id &&
+                                    l.target.id === n.id) ||
+                                (l.target.id === d.id && l.source.id === n.id)
+                        );
+                        return isConnected ? 1 : 0;
+                    });
+
+                link.transition()
+                    .duration(500)
+                    .style("opacity", (l: any) => {
+                        return l.source.id === d.id || l.target.id === d.id
+                            ? 1
+                            : 0.05;
+                    });
+
+                // To center the node, we translate it to width/2, height/2 and scale up
+                const scale = 1.8; // Fixed zoom scale for focus
+                // Don't use transitions on zoom for large scales to avoid jumpiness with filtered opacity
+                svg.transition()
+                    .duration(750)
+                    .call(
+                        zoom.transform as any,
+                        d3.zoomIdentity
+                            .translate(width / 2, height / 2)
+                            .scale(scale)
+                            .translate(-d.x, -d.y)
+                    );
+            }
+
+            function resetZoom() {
+                // Restore all opacities
+                node.transition().duration(500).style("opacity", 1);
+                label.transition().duration(500).style("opacity", 1);
+                link.transition().duration(500).style("opacity", 1);
+                postLabel.transition().duration(500).style("opacity", 0); // Hide post titles again
+
+                svg.transition()
+                    .duration(750)
+                    .call(zoom.transform as any, d3.zoomIdentity); // Reset to scale 1, pos 0,0
+            }
+
+            function dragstarted(event: any) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                event.subject.fx = event.subject.x;
+                event.subject.fy = event.subject.y;
+            }
+
+            function dragged(event: any) {
+                event.subject.fx = event.x;
+                event.subject.fy = event.y;
+            }
+
+            function dragended(event: any) {
+                if (!event.active) simulation.alphaTarget(0);
+                event.subject.fx = null;
+                event.subject.fy = null;
+            }
+        }
+    }
+</script>

@@ -8,6 +8,7 @@ import BlogHeader from "../../components/BlogHeader.astro";
 import BlogHeatmap from "../../components/BlogHeatmap.astro";
 import BlogTagsGraph from "../../components/BlogTagsGraph.astro";
 import HomeBlogCard from "../../components/HomeBlogCard.astro";
+import SidebarToggle from "../../components/SidebarToggle.astro";
 
 const posts = (await getCollection("blog")).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -41,6 +42,7 @@ const readingTotal = posts.reduce((s, p) => s + (p.data.readingTime || 5), 0);
 	</head>
 	<body class="grid-app-body">
 		<Header />
+		<SidebarToggle />
 		<main class="grid-app-main blog-main">
 			<!-- ═══ HEADER ═══ -->
 			<BlogHeader
@@ -328,7 +330,6 @@ const readingTotal = posts.reduce((s, p) => s + (p.data.readingTime || 5), 0);
 				}
 				.grid-app-main,
 				.blog-layout,
-				.blog-sidebar,
 				.blog-content,
 				.blog-grid {
 					overflow: visible;

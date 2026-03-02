@@ -5,6 +5,7 @@ import BaseHead from "../components/BaseHead.astro";
 import Footer from "../components/Footer.astro";
 import FormattedDate from "../components/FormattedDate.astro";
 import Header from "../components/Header.astro";
+import SidebarToggle from "../components/SidebarToggle.astro";
 import { getTechIcon } from "../utils/techIcons";
 
 type Props = CollectionEntry<"projects">["data"] & {
@@ -31,6 +32,7 @@ const {
 
     <body class="grid-app-body">
         <Header />
+        <SidebarToggle />
         <main class="grid-app-main project-post-main">
             <div class="post-layout">
                 <!-- ═══ SIDEBAR ═══ -->
@@ -576,11 +578,6 @@ const {
                     border-radius: 10px;
                 }
 
-                .post-sidebar {
-                    height: auto;
-                    overflow-y: visible;
-                    padding-right: 0;
-                }
                 .post-content-wrapper {
                     overflow-y: visible;
                     padding-right: 0;

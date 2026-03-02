@@ -276,3 +276,41 @@ hr {
 	vertical-align: middle;
 	display: inline-block;
 }
+
+/* ═══════════ COLLAPSIBLE SIDEBAR (mobile) ═══════════ */
+@media (max-width: 900px) {
+
+	.blog-sidebar,
+	.obs-sidebar,
+	.post-sidebar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 320px;
+		max-width: 85vw;
+		height: 100vh;
+		z-index: 900;
+		background: var(--background);
+		border-right: 1px solid var(--gray-light);
+		box-shadow: 4px 0 24px rgba(0, 0, 0, 0.12);
+		transform: translateX(-100%);
+		transition: transform 0.3s ease;
+		overflow-y: auto;
+		padding: 1rem 1.2rem;
+	}
+
+	.sidebar-open .blog-sidebar,
+	.sidebar-open .obs-sidebar,
+	.sidebar-open .post-sidebar {
+		transform: translateX(0);
+	}
+
+	/* Overlay backdrop */
+	.sidebar-open::after {
+		content: "";
+		position: fixed;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.35);
+		z-index: 899;
+	}
+}

@@ -1,0 +1,106 @@
+---
+const { totalProjects, healthyCount, totalStars, langsCount } = Astro.props;
+---
+
+<section class="panel">
+    <div class="panel-header">
+        <span class="panel-dot"></span>
+        <span class="panel-title">Métricas Globales</span>
+    </div>
+    <div class="obs-sidebar-stats">
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="agg-val">{totalProjects}</span>
+                <span class="agg-lbl">Servicios</span>
+            </div>
+            <div class="stat-box">
+                <span class="agg-val green-text">{healthyCount}</span>
+                <span class="agg-lbl">Activos</span>
+            </div>
+            <div class="stat-box">
+                <span class="agg-val">{totalStars}</span>
+                <span class="agg-lbl">Estrellas</span>
+            </div>
+            <div class="stat-box">
+                <span class="agg-val">{langsCount}</span>
+                <span class="agg-lbl">Lenguajes</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* ═══════════ PANELS ═══════════ */
+    .panel {
+        background: var(--surface);
+        border: 1px solid var(--gray-light);
+        border-radius: 14px;
+        padding: 1.2rem;
+        box-shadow: var(--box-shadow);
+    }
+
+    .panel-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .panel-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--primary);
+    }
+
+    .panel-title {
+        font-family: "Fira Code", monospace;
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--black);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* ═══════════ STATS ═══════════ */
+    .obs-sidebar-stats {
+        width: 100%;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .stat-box {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.8rem;
+        background: color-mix(in srgb, var(--background) 50%, var(--surface));
+        border: 1px solid var(--gray-light);
+        border-radius: 8px;
+    }
+
+    .agg-val {
+        font-family: "Fira Code", monospace;
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: var(--primary);
+        line-height: 1;
+        margin-bottom: 0.3rem;
+    }
+
+    .green-text {
+        color: #22c55e !important;
+    }
+
+    .agg-lbl {
+        font-family: "Fira Code", monospace;
+        font-size: 0.6rem;
+        color: var(--gray);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+</style>
